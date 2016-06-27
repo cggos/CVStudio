@@ -5,6 +5,9 @@
 #include <QMessageBox>
 
 #include <opencv2/opencv.hpp>
+#include <QWidget>
+#include <QGridLayout>
+#include <QLabel>
 
 namespace Ui {
 class MainWindow;
@@ -24,6 +27,7 @@ private:
 private:
     void CreateActions();
     void CreateMenus();
+    void InitMainWindow();
 
 private slots:
     void slotOpenOriginImg();
@@ -31,6 +35,11 @@ private slots:
 private:
     QAction *actionOpenImg;
     QMenu *menuFile;
+
+    QWidget *widgetMain;
+    QGridLayout *layoutGrid;
+    QLabel *labelSrcImg;
+    QLabel *labelDstImg;
 };
 
 #endif // MAINWINDOW_H
