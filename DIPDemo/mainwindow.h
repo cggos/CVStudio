@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMessageBox>
+
+#include <opencv2/opencv.hpp>
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +20,17 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+private:
+    void CreateActions();
+    void CreateMenus();
+
+private slots:
+    void slotOpenOriginImg();
+
+private:
+    QAction *actionOpenImg;
+    QMenu *menuFile;
 };
 
 #endif // MAINWINDOW_H
