@@ -3,11 +3,13 @@
 
 #include <QMainWindow>
 #include <QMessageBox>
-
-#include <opencv2/opencv.hpp>
 #include <QWidget>
 #include <QGridLayout>
 #include <QLabel>
+
+#include <QResizeEvent>
+
+#include <opencv2/opencv.hpp>
 
 namespace Ui {
 class MainWindow;
@@ -29,8 +31,17 @@ private:
     void CreateMenus();
     void InitMainWindow();
 
+private:
+    void DisplayImage(cv::Mat matImage,QLabel *labelImage,QLabel *labelImageInfos);
+
 private slots:
     void slotOpenOriginImg();
+
+private:
+    void resizeEvent(QResizeEvent *event);
+
+private:
+    cv::Mat imgSrc;
 
 private:
     QAction *actionOpenImg;
@@ -40,6 +51,8 @@ private:
     QGridLayout *layoutGrid;
     QLabel *labelSrcImg;
     QLabel *labelDstImg;
+    QLabel *labelSrcImgInfos;
+    QLabel *labelDstImgInfos;
 };
 
 #endif // MAINWINDOW_H
