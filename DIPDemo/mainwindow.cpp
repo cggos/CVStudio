@@ -19,16 +19,29 @@ void MainWindow::CreateActions()
 {
     actionOpenImg = new QAction(tr("&Open Image"),this);
     connect(actionOpenImg,SIGNAL(triggered(bool)),this,SLOT(slotOpenOriginImg()));
+
+    actionGray = new QAction(tr("&Gray Image"),this);
+    connect(actionGray,SIGNAL(triggered(bool)),this,SLOT(slotGrayImg()));
 }
 
 void MainWindow::CreateMenus()
 {
     menuFile = ui->menuBar->addMenu(tr("&File"));
     menuFile->addAction(actionOpenImg);
+
+    menuPointOperate = ui->menuBar->addMenu(tr("&PointOperate"));
+    menuPointOperate->addAction(actionGray);
 }
 
 void MainWindow::InitMainWindow()
 {
+    //原图像和目标图像标题显示区域定义
+    labelSrcImgTitle = new QLabel(tr("Source Image Title"));
+    labelDstImgTitle = new QLabel(tr("Destination Image Title"));
+    labelSrcImgTitle->setAlignment(Qt::AlignCenter);
+    labelDstImgTitle->setAlignment(Qt::AlignCenter);
+    labelSrcImgTitle->setFrameShape(QFrame::Box);
+    labelDstImgTitle->setFrameShape(QFrame::Box);
     //原图像和目标图像显示区域定义
     labelSrcImg = new QLabel(tr("Source Image"));
     labelDstImg = new QLabel(tr("Destination Image"));
@@ -46,10 +59,12 @@ void MainWindow::InitMainWindow()
 
     //主窗口控件布局
     layoutGrid = new QGridLayout(this);
-    layoutGrid->addWidget(labelSrcImg,0,0,9,1);
-    layoutGrid->addWidget(labelDstImg,0,1,9,1);
-    layoutGrid->addWidget(labelSrcImgInfos,9,0,1,1);
-    layoutGrid->addWidget(labelDstImgInfos,9,1,1,1);
+    layoutGrid->addWidget(labelSrcImgTitle,0,0,1,1);
+    layoutGrid->addWidget(labelDstImgTitle,0,1,1,1);
+    layoutGrid->addWidget(labelSrcImg,1,0,10,1);
+    layoutGrid->addWidget(labelDstImg,1,1,10,1);
+    layoutGrid->addWidget(labelSrcImgInfos,11,0,1,1);
+    layoutGrid->addWidget(labelDstImgInfos,11,1,1,1);
     layoutGrid->setColumnStretch(0,1);
     layoutGrid->setColumnStretch(1,1);
 
@@ -92,6 +107,17 @@ void MainWindow::slotOpenOriginImg()
     }
 }
 
+void MainWindow::slotGrayImg()
+{
+    //转换为灰度图
+    cv::Mat imgGray;
+    imgGray.create(imgSrc.rows,imgSrc.cols,CV_8U);
+    cv::cvtColor(imgSrc,imgGray,CV_BGR2GRAY);
+
+    imgDst = imgGray;
+    DisplayImage(imgDst,labelDstImg,labelDstImgInfos);
+}
+
 void MainWindow::DisplayImage(cv::Mat matImage, QLabel *labelImage, QLabel *labelImageInfos)
 {
     cv::Mat image = matImage;
@@ -102,7 +128,7 @@ void MainWindow::DisplayImage(cv::Mat matImage, QLabel *labelImage, QLabel *labe
     int N_Channels = image.channels();
 
     //显示图像信息
-    labelImageInfos->setText("源图像\r\n宽度："
+    labelImageInfos->setText("宽度："
                         + QString::number(W_Img)
                         + "，高度："
                         + QString::number(H_Img)
@@ -165,11 +191,35 @@ void MainWindow::DisplayImage(cv::Mat matImage, QLabel *labelImage, QLabel *labe
             }
         }
     }
-    cv::cvtColor(image,image,CV_BGR2RGB);
-    QImage qImg = QImage((const unsigned char*)(image.data),
-                         image.cols,image.rows,
-                         image.cols*image.channels(),
-                         QImage::Format_RGB888);
+    QImage qImg;
+    if(image.type() == CV_8UC3)
+    {
+        cv::cvtColor(image,image,CV_BGR2RGB);
+        qImg = QImage((const unsigned char*)(image.data),
+                      image.cols,image.rows,
+                      image.cols*image.channels(),
+                      QImage::Format_RGB888);
+    }
+    if(image.type() == CV_8UC1)// 8-bits unsigned, NO. OF CHANNELS = 1
+    {
+        qImg = QImage(image.cols,
+                      image.rows,
+                      QImage::Format_Indexed8);
+        // Set the color table (used to translate colour indexes to qRgb values)
+        qImg.setColorCount(256);
+        for(int i = 0; i < 256; i++)
+        {
+            qImg.setColor(i, qRgb(i, i, i));
+        }
+        // Copy input image
+        uchar *pSrc = image.data;
+        for(int row = 0; row < image.rows; row ++)
+        {
+            uchar *pDest = qImg.scanLine(row);
+            memcpy(pDest, pSrc, image.cols);
+            pSrc += image.step;
+        }
+    }
     labelImage->setPixmap(QPixmap::fromImage(qImg));
     //labelImage->resize(labelImage->pixmap()->size());
 }
@@ -186,8 +236,11 @@ MainWindow::~MainWindow()
 {
     delete ui;
 
-    delete actionOpenImg;
     delete menuFile;
+    delete actionOpenImg;   
+
+    delete menuPointOperate;
+    delete actionGray;
 
     delete labelSrcImg;
     delete labelDstImg;

@@ -35,20 +35,28 @@ private:
     void DisplayImage(cv::Mat matImage,QLabel *labelImage,QLabel *labelImageInfos);
 
 private slots:
-    void slotOpenOriginImg();
+    void slotOpenOriginImg();//Open Source Image
+
+    void slotGrayImg();//image gray processing
 
 private:
     void resizeEvent(QResizeEvent *event);
 
 private:
     cv::Mat imgSrc;
+    cv::Mat imgDst;
 
 private:
-    QAction *actionOpenImg;
     QMenu *menuFile;
+    QAction *actionOpenImg;
+
+    QMenu *menuPointOperate;
+    QAction *actionGray;
 
     QWidget *widgetMain;
     QGridLayout *layoutGrid;
+    QLabel *labelSrcImgTitle;
+    QLabel *labelDstImgTitle;
     QLabel *labelSrcImg;
     QLabel *labelDstImg;
     QLabel *labelSrcImgInfos;
