@@ -25,8 +25,12 @@ void MainWindow::CreateActions()
     actionSaveImgDst = new QAction(tr("保存目标图像..."),this);
     connect(actionSaveImgDst,SIGNAL(triggered(bool)),this,SLOT(slotSaveImgDst()));
 
+
     actionGray = new QAction(tr("图像灰度化"),this);
     connect(actionGray,SIGNAL(triggered(bool)),this,SLOT(slotGrayImg()));
+
+    actionHist = new QAction(tr("灰度直方图"),this);
+    connect(actionHist,SIGNAL(triggered(bool)),this,SLOT(slotHistogram()));
 }
 
 //创建菜单，添加菜单项
@@ -39,6 +43,7 @@ void MainWindow::CreateMenus()
 
     menuPointOperate = ui->menuBar->addMenu(tr("点运算"));
     menuPointOperate->addAction(actionGray);
+    menuPointOperate->addAction(actionHist);
 }
 
 //初始化主窗口布局
@@ -165,6 +170,53 @@ void MainWindow::slotGrayImg()
     imgDst = imgGray;
     nameDstImg = "Gray_" + nameSrcImg;
     dirDstImg = dirSrcImg;
+    DisplayImage(imgDst,
+                 labelDstImgTitle,1,nameDstImg,dirDstImg,
+                 labelDstImg,labelDstImgInfos);
+}
+
+void MainWindow::slotHistogram()
+{
+    if(imgSrc.empty())
+    {
+        QMessageBox::critical(this,
+                              "图像错误",
+                              "原始图像不存在",
+                              QMessageBox::Yes);
+        return;
+    }
+    //转换为灰度图
+    cv::Mat imgGray;
+    imgGray.create(imgSrc.rows,imgSrc.cols,CV_8U);
+    cv::cvtColor(imgSrc,imgGray,CV_BGR2GRAY);
+
+    int channels[1]={0};//仅用0号通道
+    int histSize[1]={256};//项的数量
+    float hranges[2]={0.0,255.0};//像素的最小和最大值
+    const float *ranges[1];
+    ranges[0]=hranges;
+    cv::MatND hist;//计算图像直方图
+    cv::calcHist(&imgGray,1,channels,cv::Mat(),hist,1,histSize,ranges);
+
+    double maxVal=0;
+    double minVal=0;
+    cv::minMaxLoc(hist,&minVal,&maxVal,0,0);
+
+    cv::Mat imgHist(histSize[0],histSize[0],CV_8UC3,cv::Scalar::all(255));
+    //设置最高点为nbins的90%
+    int hpt = static_cast<int>(0.9*histSize[0]);
+    //每个条目都绘制一条垂直线
+    for(int h=0;h<histSize[0];h++)
+    {
+        float binVal = hist.at<float>(h);
+        int intensity = static_cast<int>(binVal*hpt/maxVal);
+        cv::line(imgHist,
+                 cv::Point(h,histSize[0]),
+                cv::Point(h,histSize[0]-intensity),
+                cv::Scalar(0,255,0));//cv::Scalar::all(0)
+    }
+
+    imgDst = imgHist;
     DisplayImage(imgDst,
                  labelDstImgTitle,1,nameDstImg,dirDstImg,
                  labelDstImg,labelDstImgInfos);

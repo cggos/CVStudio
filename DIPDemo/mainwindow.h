@@ -48,6 +48,7 @@ private slots:
     void slotSaveImgDst();//Save Destination Image
 
     void slotGrayImg();//image gray processing
+    void slotHistogram();//generate image of gray image histogram
 
 private:
     void resizeEvent(QResizeEvent *);
@@ -76,6 +77,7 @@ private:
 
     QMenu *menuPointOperate;
     QAction *actionGray;
+    QAction *actionHist;
 
     QWidget *widgetMain;
     QGridLayout *layoutGrid;
