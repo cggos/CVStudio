@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "./ImageFileOpt/ImageFileOpt.h"
+
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QWidget>
@@ -9,7 +11,7 @@
 
 #include <QResizeEvent>
 
-#include <opencv2/opencv.hpp>
+
 
 namespace Ui {
 class MainWindow;
@@ -41,12 +43,17 @@ private:
                       QLabel *labelImageInfos);
 
 private slots:
-    void slotOpenOriginImg();//Open Source Image
+    void slotOpenImgSrc();//Open Source Image
+    void slotSaveImgSrc();//Save Source Image
+    void slotSaveImgDst();//Save Destination Image
 
     void slotGrayImg();//image gray processing
 
 private:
-    void resizeEvent(QResizeEvent *event);
+    void resizeEvent(QResizeEvent *);
+
+private:
+    ImageFileOpt optImgFile;
 
 private:
     cv::Mat imgSrc;
@@ -64,6 +71,8 @@ private:
 private:
     QMenu *menuFile;
     QAction *actionOpenImg;
+    QAction *actionSaveImgSrc;
+    QAction *actionSaveImgDst;
 
     QMenu *menuPointOperate;
     QAction *actionGray;

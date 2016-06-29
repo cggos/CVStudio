@@ -12,9 +12,11 @@ TARGET = DIPDemo
 TEMPLATE = app
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    ImageFileOpt/ImageFileOpt.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    ImageFileOpt/ImageFileOpt.h
 
 FORMS    += mainwindow.ui
 

@@ -1,9 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QFileDialog>
-#include <QFileInfo>
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -16,24 +13,35 @@ MainWindow::MainWindow(QWidget *parent) :
     InitMainWindow();
 }
 
+//创建菜单项
 void MainWindow::CreateActions()
 {
-    actionOpenImg = new QAction(tr("&Open Image"),this);
-    connect(actionOpenImg,SIGNAL(triggered(bool)),this,SLOT(slotOpenOriginImg()));
+    actionOpenImg = new QAction(tr("打开图像"),this);
+    connect(actionOpenImg,SIGNAL(triggered(bool)),this,SLOT(slotOpenImgSrc()));
 
-    actionGray = new QAction(tr("&Gray Image"),this);
+    actionSaveImgSrc = new QAction(tr("保存原始图像..."),this);
+    connect(actionSaveImgSrc,SIGNAL(triggered(bool)),this,SLOT(slotSaveImgSrc()));
+
+    actionSaveImgDst = new QAction(tr("保存目标图像..."),this);
+    connect(actionSaveImgDst,SIGNAL(triggered(bool)),this,SLOT(slotSaveImgDst()));
+
+    actionGray = new QAction(tr("图像灰度化"),this);
     connect(actionGray,SIGNAL(triggered(bool)),this,SLOT(slotGrayImg()));
 }
 
+//创建菜单，添加菜单项
 void MainWindow::CreateMenus()
 {
-    menuFile = ui->menuBar->addMenu(tr("&File"));
+    menuFile = ui->menuBar->addMenu(tr("文件"));
     menuFile->addAction(actionOpenImg);
+    menuFile->addAction(actionSaveImgSrc);
+    menuFile->addAction(actionSaveImgDst);
 
-    menuPointOperate = ui->menuBar->addMenu(tr("&PointOperate"));
+    menuPointOperate = ui->menuBar->addMenu(tr("点运算"));
     menuPointOperate->addAction(actionGray);
 }
 
+//初始化主窗口布局
 void MainWindow::InitMainWindow()
 {
     //原图像和目标图像标题显示区域定义
@@ -59,7 +67,7 @@ void MainWindow::InitMainWindow()
     labelDstImgInfos->setAlignment(Qt::AlignCenter);
 
     //主窗口控件布局
-    layoutGrid = new QGridLayout(this);
+    layoutGrid = new QGridLayout();
     layoutGrid->addWidget(labelSrcImgTitle,0,0,1,1);
     layoutGrid->addWidget(labelDstImgTitle,0,1,1,1);
     layoutGrid->addWidget(labelSrcImg,1,0,10,1);
@@ -74,49 +82,81 @@ void MainWindow::InitMainWindow()
     widgetMain->setLayout(layoutGrid);
 }
 
-void MainWindow::slotOpenOriginImg()
+void MainWindow::slotOpenImgSrc()
 {
-    //打开源图像
-//    QString pathOriImg =
-//            QFileDialog::getOpenFileName(this,tr("Open Image"),".",
-//                                         tr("Image Files(*.png *.jpg *.jpeg *.bmp)"));
-    QStringList pathListOriImg;
-    QString selfilter = tr("Image Files(*.png *.jpg *.jpeg *.bmp);;All Files(*)");
-    QFileDialog *dlgFile = new QFileDialog(this,"File Dialog",".",selfilter);
-    dlgFile->setFilter(QDir::Files);
-    dlgFile->setViewMode(QFileDialog::List);
-    dlgFile->setFileMode(QFileDialog::ExistingFile);
-    if(dlgFile->exec() == QDialog::Accepted)
+    QFileInfo fileImage;
+    int ret = optImgFile.OpenImage(fileImage);
+    if(ret == 0)
     {
-        pathListOriImg = dlgFile->selectedFiles();
-    }
-    else
-    {
-        return;
-    }
-    QFileInfo fileImage = QFileInfo(pathListOriImg.at(0));
-    nameSrcImg = fileImage.fileName();
-    pathSrcImg = fileImage.filePath();
-    dirSrcImg  = fileImage.absolutePath();
+        nameSrcImg = fileImage.fileName();
+        pathSrcImg = fileImage.filePath();
+        dirSrcImg  = fileImage.absolutePath();
 
-    //读取并显示源图像
-    imgSrc = cv::imread(pathSrcImg.toLocal8Bit().data());
-    if(imgSrc.data)
-    {
-        DisplayImage(imgSrc,
-                     labelSrcImgTitle,0,nameSrcImg,dirSrcImg,
-                     labelSrcImg,labelSrcImgInfos);
+        //读取并显示源图像
+        imgSrc = cv::imread(pathSrcImg.toLocal8Bit().data());
+        if(imgSrc.data)
+        {
+            DisplayImage(imgSrc,
+                         labelSrcImgTitle,0,nameSrcImg,dirSrcImg,
+                         labelSrcImg,labelSrcImgInfos);
+        }
+        else
+        {
+            QMessageBox::critical(this,tr("图像错误"),tr("读取图像失败！"),
+                                 QMessageBox::Yes);
+            return;
+        }
     }
-    else
+}
+
+void MainWindow::slotSaveImgSrc()
+{
+    int ret = optImgFile.SaveImage(imgSrc);
+    if(ret == 0)
     {
-        QMessageBox::warning(this,tr("Open Image Error"),tr("Image Error"),
-                             QMessageBox::Yes);
-        return;
+        QMessageBox::information(this,
+                                 "保存成功",
+                                 "保存原始图像成功",
+                                 QMessageBox::Yes);
+    }
+    else if(ret == -1)
+    {
+        QMessageBox::critical(this,
+                              "图像错误",
+                              "原始图像不存在",
+                              QMessageBox::Yes);
+    }
+}
+
+void MainWindow::slotSaveImgDst()
+{
+    int ret = optImgFile.SaveImage(imgDst);
+    if(ret == 0)
+    {
+        QMessageBox::information(this,
+                                 "保存成功",
+                                 "保存目标图像成功",
+                                 QMessageBox::Yes);
+    }
+    else if(ret == -1)
+    {
+        QMessageBox::critical(this,
+                              "图像错误",
+                              "目标图像不存在",
+                              QMessageBox::Yes);
     }
 }
 
 void MainWindow::slotGrayImg()
 {
+    if(imgSrc.empty())
+    {
+        QMessageBox::critical(this,
+                              "图像错误",
+                              "原始图像不存在",
+                              QMessageBox::Yes);
+        return;
+    }
     //转换为灰度图
     cv::Mat imgGray;
     imgGray.create(imgSrc.rows,imgSrc.cols,CV_8U);
@@ -255,12 +295,8 @@ void MainWindow::DisplayImage(cv::Mat matImage,
     //labelImage->resize(labelImage->pixmap()->size());
 }
 
-void MainWindow::resizeEvent(QResizeEvent *event)
+void MainWindow::resizeEvent(QResizeEvent *)
 {
-//    if(imgSrc.data)
-//    {
-//        DisplayImage(imgSrc,labelSrcImg);
-//    }
 }
 
 MainWindow::~MainWindow()
@@ -268,7 +304,9 @@ MainWindow::~MainWindow()
     delete ui;
 
     delete menuFile;
-    delete actionOpenImg;   
+    delete actionOpenImg;
+    delete actionSaveImgSrc;
+    delete actionSaveImgDst;
 
     delete menuPointOperate;
     delete actionGray;
