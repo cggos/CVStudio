@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include <QFileDialog>
+#include <QFileInfo>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -93,11 +94,18 @@ void MainWindow::slotOpenOriginImg()
     {
         return;
     }
+    QFileInfo fileImage = QFileInfo(pathListOriImg.at(0));
+    nameSrcImg = fileImage.fileName();
+    pathSrcImg = fileImage.filePath();
+    dirSrcImg  = fileImage.absolutePath();
+
     //读取并显示源图像
-    imgSrc = cv::imread(pathListOriImg.at(0).toLocal8Bit().data());
+    imgSrc = cv::imread(pathSrcImg.toLocal8Bit().data());
     if(imgSrc.data)
     {
-        DisplayImage(imgSrc,labelSrcImg,labelSrcImgInfos);
+        DisplayImage(imgSrc,
+                     labelSrcImgTitle,0,nameSrcImg,dirSrcImg,
+                     labelSrcImg,labelSrcImgInfos);
     }
     else
     {
@@ -115,10 +123,20 @@ void MainWindow::slotGrayImg()
     cv::cvtColor(imgSrc,imgGray,CV_BGR2GRAY);
 
     imgDst = imgGray;
-    DisplayImage(imgDst,labelDstImg,labelDstImgInfos);
+    nameDstImg = "Gray_" + nameSrcImg;
+    dirDstImg = dirSrcImg;
+    DisplayImage(imgDst,
+                 labelDstImgTitle,1,nameDstImg,dirDstImg,
+                 labelDstImg,labelDstImgInfos);
 }
 
-void MainWindow::DisplayImage(cv::Mat matImage, QLabel *labelImage, QLabel *labelImageInfos)
+void MainWindow::DisplayImage(cv::Mat matImage,
+                              QLabel *labelImageTitle,
+                              int SrcOrDst,
+                              QString nameImage,
+                              QString dirImage,
+                              QLabel *labelImage,
+                              QLabel *labelImageInfos)
 {
     cv::Mat image = matImage;
     int W_LabelImg = labelImage->width();
@@ -126,6 +144,19 @@ void MainWindow::DisplayImage(cv::Mat matImage, QLabel *labelImage, QLabel *labe
     int W_Img = image.cols;
     int H_Img = image.rows;
     int N_Channels = image.channels();
+
+    if(SrcOrDst==0)
+    {
+        labelImageTitle->setText("源图像\r\n名称："
+                                 + nameImage
+                                 + "\r\n目录："
+                                 + dirImage);
+    }
+    else
+    {
+        labelImageTitle->setText("目标图像");
+    }
+
 
     //显示图像信息
     labelImageInfos->setText("宽度："

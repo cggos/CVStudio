@@ -32,7 +32,13 @@ private:
     void InitMainWindow();
 
 private:
-    void DisplayImage(cv::Mat matImage,QLabel *labelImage,QLabel *labelImageInfos);
+    void DisplayImage(cv::Mat matImage,
+                      QLabel *labelImageTitle,
+                      int SrcOrDst,
+                      QString nameImage,
+                      QString dirImage,
+                      QLabel *labelImage,
+                      QLabel *labelImageInfos);
 
 private slots:
     void slotOpenOriginImg();//Open Source Image
@@ -45,6 +51,15 @@ private:
 private:
     cv::Mat imgSrc;
     cv::Mat imgDst;
+
+    QString nameSrcImg;
+    QString pathSrcImg;
+    QString  dirSrcImg;
+
+    QString nameDstImg;
+    QString pathDstImg;
+    QString  dirDstImg;
+
 
 private:
     QMenu *menuFile;
