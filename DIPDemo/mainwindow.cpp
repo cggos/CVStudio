@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
     CreateMenus();
 
     InitMainWindow();
+
+    InitStatusBar();
 }
 
 //创建菜单项
@@ -25,6 +27,8 @@ void MainWindow::CreateActions()
     actionSaveImgDst = new QAction(tr("保存目标图像..."),this);
     connect(actionSaveImgDst,SIGNAL(triggered(bool)),this,SLOT(slotSaveImgDst()));
 
+    actionSwapImg = new QAction(tr("原始目标图像对调"),this);
+    connect(actionSwapImg,SIGNAL(triggered(bool)),this,SLOT(slotSwapImg()));
 
     actionGray = new QAction(tr("图像灰度化"),this);
     connect(actionGray,SIGNAL(triggered(bool)),this,SLOT(slotGrayImg()));
@@ -38,11 +42,15 @@ void MainWindow::CreateMenus()
 {
     menuFile = ui->menuBar->addMenu(tr("文件"));
     menuFile->addAction(actionOpenImg);
+    menuFile->addSeparator();
     menuFile->addAction(actionSaveImgSrc);
     menuFile->addAction(actionSaveImgDst);
+    menuFile->addSeparator();
+    menuFile->addAction(actionSwapImg);
 
     menuPointOperate = ui->menuBar->addMenu(tr("点运算"));
     menuPointOperate->addAction(actionGray);
+    menuPointOperate->addSeparator();
     menuPointOperate->addAction(actionHist);
 }
 
@@ -87,6 +95,12 @@ void MainWindow::InitMainWindow()
     widgetMain->setLayout(layoutGrid);
 }
 
+void MainWindow::InitStatusBar()
+{
+    labelSrcImgPath = new QLabel("Source Image Path");
+    ui->statusBar->addWidget(labelSrcImgPath);
+}
+
 void MainWindow::slotOpenImgSrc()
 {
     QFileInfo fileImage;
@@ -101,9 +115,7 @@ void MainWindow::slotOpenImgSrc()
         imgSrc = cv::imread(pathSrcImg.toLocal8Bit().data());
         if(imgSrc.data)
         {
-            DisplayImage(imgSrc,
-                         labelSrcImgTitle,0,nameSrcImg,dirSrcImg,
-                         labelSrcImg,labelSrcImgInfos);
+            DisplayImage(imgSrc,0);
         }
         else
         {
@@ -152,13 +164,31 @@ void MainWindow::slotSaveImgDst()
     }
 }
 
+void MainWindow::slotSwapImg()
+{
+    if(imgSrc.empty() || imgDst.empty())
+    {
+        QMessageBox::critical(this,
+                              "图像错误",
+                              "原始图像或目标图像不存在！",
+                              QMessageBox::Yes);
+        return;
+    }
+    cv::Mat imgTemp = imgSrc;
+    imgSrc = imgDst;
+    imgDst = imgTemp;
+
+    DisplayImage(imgSrc,0);
+    DisplayImage(imgDst,1);
+}
+
 void MainWindow::slotGrayImg()
 {
     if(imgSrc.empty())
     {
         QMessageBox::critical(this,
                               "图像错误",
-                              "原始图像不存在",
+                              "原始图像不存在！",
                               QMessageBox::Yes);
         return;
     }
@@ -168,11 +198,7 @@ void MainWindow::slotGrayImg()
     cv::cvtColor(imgSrc,imgGray,CV_BGR2GRAY);
 
     imgDst = imgGray;
-    nameDstImg = "Gray_" + nameSrcImg;
-    dirDstImg = dirSrcImg;
-    DisplayImage(imgDst,
-                 labelDstImgTitle,1,nameDstImg,dirDstImg,
-                 labelDstImg,labelDstImgInfos);
+    DisplayImage(imgDst,1);
 }
 
 void MainWindow::slotHistogram()
@@ -188,7 +214,14 @@ void MainWindow::slotHistogram()
     //转换为灰度图
     cv::Mat imgGray;
     imgGray.create(imgSrc.rows,imgSrc.cols,CV_8U);
-    cv::cvtColor(imgSrc,imgGray,CV_BGR2GRAY);
+    if(imgSrc.channels()==3)
+    {
+        cv::cvtColor(imgSrc,imgGray,CV_BGR2GRAY);
+    }
+    else if(imgSrc.channels()==1)
+    {
+        imgGray = imgSrc;
+    }
 
     int channels[1]={0};//仅用0号通道
     int histSize[1]={256};//项的数量
@@ -217,46 +250,45 @@ void MainWindow::slotHistogram()
     }
 
     imgDst = imgHist;
-    DisplayImage(imgDst,
-                 labelDstImgTitle,1,nameDstImg,dirDstImg,
-                 labelDstImg,labelDstImgInfos);
+    DisplayImage(imgDst,1);
 }
 
-void MainWindow::DisplayImage(cv::Mat matImage,
-                              QLabel *labelImageTitle,
-                              int SrcOrDst,
-                              QString nameImage,
-                              QString dirImage,
-                              QLabel *labelImage,
-                              QLabel *labelImageInfos)
+void MainWindow::DisplayImage(cv::Mat matImage,int SrcOrDst)
 {
     cv::Mat image = matImage;
-    int W_LabelImg = labelImage->width();
-    int H_LabelImg = labelImage->height();
+
+    QLabel *labelImage;
+    QLabel *labelImageInfos;
+
     int W_Img = image.cols;
     int H_Img = image.rows;
     int N_Channels = image.channels();
 
     if(SrcOrDst==0)
     {
-        labelImageTitle->setText("源图像\r\n名称："
-                                 + nameImage
-                                 + "\r\n目录："
-                                 + dirImage);
+        labelSrcImgTitle->setText("源图像");
+        labelImage = labelSrcImg;
+        labelImageInfos = labelSrcImgInfos;
+
+        labelSrcImgPath->setText("原始图像路径："+pathSrcImg);
     }
     else
     {
-        labelImageTitle->setText("目标图像");
+        labelDstImgTitle->setText("目标图像");
+        labelImage = labelDstImg;
+        labelImageInfos = labelDstImgInfos;
     }
 
+    int W_LabelImg = labelImage->width();
+    int H_LabelImg = labelImage->height();
 
     //显示图像信息
     labelImageInfos->setText("宽度："
-                        + QString::number(W_Img)
-                        + "，高度："
-                        + QString::number(H_Img)
-                        + "，通道数："
-                        + QString::number(N_Channels));
+                             + QString::number(W_Img)
+                             + "，高度："
+                             + QString::number(H_Img)
+                             + "，通道数："
+                             + QString::number(N_Channels));
 
     //根据显示图像的label大小改变图像尺寸
     if(W_Img>W_LabelImg && H_Img<=H_LabelImg)
@@ -363,9 +395,13 @@ MainWindow::~MainWindow()
     delete menuPointOperate;
     delete actionGray;
 
+    delete labelSrcImgTitle;
     delete labelSrcImg;
-    delete labelDstImg;
     delete labelSrcImgInfos;
+    delete labelSrcImgPath;
+
+    delete labelDstImgTitle;
+    delete labelDstImg;
     delete labelDstImgInfos;
 
     delete layoutGrid;

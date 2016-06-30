@@ -32,20 +32,16 @@ private:
     void CreateActions();
     void CreateMenus();
     void InitMainWindow();
+    void InitStatusBar();
 
 private:
-    void DisplayImage(cv::Mat matImage,
-                      QLabel *labelImageTitle,
-                      int SrcOrDst,
-                      QString nameImage,
-                      QString dirImage,
-                      QLabel *labelImage,
-                      QLabel *labelImageInfos);
+    void DisplayImage(cv::Mat matImage,int SrcOrDst);
 
 private slots:
     void slotOpenImgSrc();//Open Source Image
     void slotSaveImgSrc();//Save Source Image
     void slotSaveImgDst();//Save Destination Image
+    void slotSwapImg();//Swap the Source Image and Destination Image
 
     void slotGrayImg();//image gray processing
     void slotHistogram();//generate image of gray image histogram
@@ -74,6 +70,7 @@ private:
     QAction *actionOpenImg;
     QAction *actionSaveImgSrc;
     QAction *actionSaveImgDst;
+    QAction *actionSwapImg;
 
     QMenu *menuPointOperate;
     QAction *actionGray;
@@ -81,11 +78,14 @@ private:
 
     QWidget *widgetMain;
     QGridLayout *layoutGrid;
+
     QLabel *labelSrcImgTitle;
-    QLabel *labelDstImgTitle;
     QLabel *labelSrcImg;
-    QLabel *labelDstImg;
     QLabel *labelSrcImgInfos;
+    QLabel *labelSrcImgPath;
+
+    QLabel *labelDstImgTitle;
+    QLabel *labelDstImg;
     QLabel *labelDstImgInfos;
 };
 
