@@ -36,6 +36,7 @@ private:
 
 private:
     void DisplayImage(cv::Mat matImage,int SrcOrDst);
+    cv::Mat CvtToGrayImg(cv::Mat matImage);
 
 private slots:
     void slotOpenImgSrc();//Open Source Image
@@ -45,6 +46,7 @@ private slots:
 
     void slotGrayImg();//image gray processing
     void slotHistogram();//generate image of gray image histogram
+    void slotHistEqualize();//equalize the histogram of image
 
 private:
     void resizeEvent(QResizeEvent *);
@@ -75,6 +77,7 @@ private:
     QMenu *menuPointOperate;
     QAction *actionGray;
     QAction *actionHist;
+    QAction *actionHistEqualize;
 
     QWidget *widgetMain;
     QGridLayout *layoutGrid;

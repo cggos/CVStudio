@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //创建菜单项
 void MainWindow::CreateActions()
 {
+    //“文件”
     actionOpenImg = new QAction(tr("打开图像"),this);
     connect(actionOpenImg,SIGNAL(triggered(bool)),this,SLOT(slotOpenImgSrc()));
 
@@ -30,11 +31,15 @@ void MainWindow::CreateActions()
     actionSwapImg = new QAction(tr("原始目标图像对调"),this);
     connect(actionSwapImg,SIGNAL(triggered(bool)),this,SLOT(slotSwapImg()));
 
+    //“点运算”
     actionGray = new QAction(tr("图像灰度化"),this);
     connect(actionGray,SIGNAL(triggered(bool)),this,SLOT(slotGrayImg()));
 
     actionHist = new QAction(tr("灰度直方图"),this);
     connect(actionHist,SIGNAL(triggered(bool)),this,SLOT(slotHistogram()));
+
+    actionHistEqualize = new QAction(tr("直方图均衡化"),this);
+    connect(actionHistEqualize,SIGNAL(triggered(bool)),this,SLOT(slotHistEqualize()));
 }
 
 //创建菜单，添加菜单项
@@ -52,6 +57,7 @@ void MainWindow::CreateMenus()
     menuPointOperate->addAction(actionGray);
     menuPointOperate->addSeparator();
     menuPointOperate->addAction(actionHist);
+    menuPointOperate->addAction(actionHistEqualize);
 }
 
 //初始化主窗口布局
@@ -192,12 +198,8 @@ void MainWindow::slotGrayImg()
                               QMessageBox::Yes);
         return;
     }
-    //转换为灰度图
-    cv::Mat imgGray;
-    imgGray.create(imgSrc.rows,imgSrc.cols,CV_8U);
-    cv::cvtColor(imgSrc,imgGray,CV_BGR2GRAY);
 
-    imgDst = imgGray;
+    imgDst = CvtToGrayImg(imgSrc);
     DisplayImage(imgDst,1);
 }
 
@@ -211,18 +213,8 @@ void MainWindow::slotHistogram()
                               QMessageBox::Yes);
         return;
     }
-    //转换为灰度图
-    cv::Mat imgGray;
-    imgGray.create(imgSrc.rows,imgSrc.cols,CV_8U);
-    if(imgSrc.channels()==3)
-    {
-        cv::cvtColor(imgSrc,imgGray,CV_BGR2GRAY);
-    }
-    else if(imgSrc.channels()==1)
-    {
-        imgGray = imgSrc;
-    }
 
+    cv::Mat imgGray = CvtToGrayImg(imgSrc);
     int channels[1]={0};//仅用0号通道
     int histSize[1]={256};//项的数量
     float hranges[2]={0.0,255.0};//像素的最小和最大值
@@ -235,22 +227,68 @@ void MainWindow::slotHistogram()
     double minVal=0;
     cv::minMaxLoc(hist,&minVal,&maxVal,0,0);
 
-    cv::Mat imgHist(histSize[0],histSize[0],CV_8UC3,cv::Scalar::all(255));
-    //设置最高点为nbins的90%
-    int hpt = static_cast<int>(0.9*histSize[0]);
+    int W_HistImg = histSize[0]*4;
+    int H_HistImg = histSize[0]*3;
+    cv::Mat imgHist(H_HistImg,W_HistImg,CV_8UC3,cv::Scalar::all(255));
+    int hpt = static_cast<int>(0.9*H_HistImg);//设置最高点
+    int xUnitLen = static_cast<int>(W_HistImg/histSize[0]);//X轴单位长度
+    int xPt=0;
     //每个条目都绘制一条垂直线
-    for(int h=0;h<histSize[0];h++)
+    for(int n=0;n<histSize[0];n++)
     {
-        float binVal = hist.at<float>(h);
+        float binVal = hist.at<float>(n);
         int intensity = static_cast<int>(binVal*hpt/maxVal);
         cv::line(imgHist,
-                 cv::Point(h,histSize[0]),
-                cv::Point(h,histSize[0]-intensity),
+                 cv::Point(xPt,H_HistImg),
+                cv::Point(xPt,H_HistImg-intensity),
                 cv::Scalar(0,255,0));//cv::Scalar::all(0)
+        //画x轴刻度
+        if(n%16 == 0)
+        {
+            cv::rectangle(imgHist,
+                          cv::Point(xPt,H_HistImg),
+                          cv::Point(xPt+5,H_HistImg-5),
+                          cv::Scalar(0,0,255));
+        }
+        xPt += xUnitLen;
     }
 
     imgDst = imgHist;
     DisplayImage(imgDst,1);
+}
+
+void MainWindow::slotHistEqualize()
+{
+    if(imgSrc.empty())
+    {
+        QMessageBox::critical(this,
+                              "图像错误",
+                              "原始图像不存在",
+                              QMessageBox::Yes);
+        return;
+    }
+
+    cv::Mat imgHistEqua;
+    cv::equalizeHist(CvtToGrayImg(imgSrc),imgHistEqua);
+
+    imgDst = imgHistEqua;
+    DisplayImage(imgDst,1);
+}
+
+cv::Mat MainWindow::CvtToGrayImg(cv::Mat matImage)
+{
+    //转换为灰度图
+    cv::Mat imgGray;
+    imgGray.create(matImage.rows,matImage.cols,CV_8U);
+    if(matImage.channels()==3)
+    {
+        cv::cvtColor(matImage,imgGray,CV_BGR2GRAY);
+    }
+    else if(matImage.channels()==1)
+    {
+        imgGray = matImage;
+    }
+    return  imgGray;
 }
 
 void MainWindow::DisplayImage(cv::Mat matImage,int SrcOrDst)
