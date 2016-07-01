@@ -1,0 +1,29 @@
+QAction,QLabel
+{
+    font:16px;
+}
+
+QLabel[objectName="objLabelSrcImgTitle"],
+QLabel[objectName="objLabelDstImgTitle"]
+{
+    background:rgb(150,200,250);
+    color:red;
+    font-size:20px;
+    /*font-family:"黑体";*/
+    border-radius:10px;
+}
+
+QLabel[objectName="objLabelSrcImg"],
+QLabel[objectName="objLabelDstImg"]
+{
+    background:rgb(255,255,255);
+    border:10px;
+}
+
+QLabel[objectName="objLabelSrcImgInfos"],
+QLabel[objectName="objLabelDstImgInfos"]
+{
+    background:rgb(192,192,192);
+    color:blue;
+    border:10px;
+}

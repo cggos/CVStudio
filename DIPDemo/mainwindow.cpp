@@ -3,7 +3,9 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    strPathQssFile(":/QSS/QSS/StyleSheet.qss"),
+    clrBKApp(QColor(205,215,230))
 {
     ui->setupUi(this);
 
@@ -13,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
     InitMainWindow();
 
     InitStatusBar();
+
+    BeautifyUI();
 }
 
 //创建菜单项
@@ -66,6 +70,8 @@ void MainWindow::InitMainWindow()
     //原图像和目标图像标题显示区域定义
     labelSrcImgTitle = new QLabel(tr("Source Image Title"));
     labelDstImgTitle = new QLabel(tr("Destination Image Title"));
+    labelSrcImgTitle->setObjectName("objLabelSrcImgTitle");
+    labelDstImgTitle->setObjectName("objLabelDstImgTitle");
     labelSrcImgTitle->setAlignment(Qt::AlignCenter);
     labelDstImgTitle->setAlignment(Qt::AlignCenter);
     labelSrcImgTitle->setFrameShape(QFrame::Box);
@@ -73,17 +79,21 @@ void MainWindow::InitMainWindow()
     //原图像和目标图像显示区域定义
     labelSrcImg = new QLabel(tr("Source Image"));
     labelDstImg = new QLabel(tr("Destination Image"));
-    labelSrcImg->setFrameShape(QFrame::Box);
+    labelSrcImg->setObjectName("objLabelSrcImg");
+    labelDstImg->setObjectName("objLabelDstImg");
     labelSrcImg->setAlignment(Qt::AlignCenter);
-    labelDstImg->setFrameShape(QFrame::Box);
     labelDstImg->setAlignment(Qt::AlignCenter);
+    labelSrcImg->setFrameShape(QFrame::Box);
+    labelDstImg->setFrameShape(QFrame::Box);
     //原图像和目标图像信息显示区域定义
     labelSrcImgInfos = new QLabel(tr("Source Image Infos"));
     labelDstImgInfos = new QLabel(tr("Destination Image Infos"));
-    labelSrcImgInfos->setFrameShape(QFrame::Box);
+    labelSrcImgInfos->setObjectName("objLabelSrcImgInfos");
+    labelDstImgInfos->setObjectName("objLabelDstImgInfos");
     labelSrcImgInfos->setAlignment(Qt::AlignCenter);
-    labelDstImgInfos->setFrameShape(QFrame::Box);
     labelDstImgInfos->setAlignment(Qt::AlignCenter);
+    labelSrcImgInfos->setFrameShape(QFrame::Box);
+    labelDstImgInfos->setFrameShape(QFrame::Box);
 
     //主窗口控件布局
     layoutGrid = new QGridLayout();
@@ -105,6 +115,33 @@ void MainWindow::InitStatusBar()
 {
     labelSrcImgPath = new QLabel("Source Image Path");
     ui->statusBar->addWidget(labelSrcImgPath);
+}
+
+void MainWindow::BeautifyUI()
+{
+    //加载CSS样式表文件并应用相应样式
+    QFile qssFile(strPathQssFile);
+    if(qssFile.exists())
+    {
+        qssFile.open(QFile::ReadOnly);
+        if(qssFile.isOpen())
+        {
+            QString qss = QLatin1String(qssFile.readAll());
+            qApp->setStyleSheet(qss);
+            qssFile.close();
+        }
+    }
+    else
+    {
+        QMessageBox::warning(NULL,"Qss文件错误",strPathQssFile+"找不到！");
+        return;
+    }
+
+    //设置应用程序背景色
+    QPalette *paletteApp=new QPalette();
+    paletteApp->setColor(QPalette::Background,clrBKApp);
+    this->setPalette(*paletteApp);
+    delete paletteApp;
 }
 
 void MainWindow::slotOpenImgSrc()
@@ -240,8 +277,8 @@ void MainWindow::slotHistogram()
         int intensity = static_cast<int>(binVal*hpt/maxVal);
         cv::line(imgHist,
                  cv::Point(xPt,H_HistImg),
-                cv::Point(xPt,H_HistImg-intensity),
-                cv::Scalar(0,255,0));//cv::Scalar::all(0)
+                 cv::Point(xPt,H_HistImg-intensity),
+                 cv::Scalar(0,255,0));//cv::Scalar::all(0)
         //画x轴刻度
         if(n%16 == 0)
         {

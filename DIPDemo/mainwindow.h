@@ -33,6 +33,7 @@ private:
     void CreateMenus();
     void InitMainWindow();
     void InitStatusBar();
+    void BeautifyUI();
 
 private:
     void DisplayImage(cv::Mat matImage,int SrcOrDst);
@@ -90,6 +91,10 @@ private:
     QLabel *labelDstImgTitle;
     QLabel *labelDstImg;
     QLabel *labelDstImgInfos;
+
+private:
+    const QString strPathQssFile;
+    const QColor clrBKApp;
 };
 
 #endif // MAINWINDOW_H
