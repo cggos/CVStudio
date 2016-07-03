@@ -155,7 +155,7 @@ void MainWindow::slotOpenImgSrc()
         dirSrcImg  = fileImage.absolutePath();
 
         //读取并显示源图像
-        imgSrc = cv::imread(pathSrcImg.toLocal8Bit().data());
+        imgSrc = procCVImg.ReadImage(pathSrcImg);
         if(imgSrc.data)
         {
             DisplayImage(imgSrc,0);
@@ -236,7 +236,7 @@ void MainWindow::slotGrayImg()
         return;
     }
 
-    imgDst = CvtToGrayImg(imgSrc);
+    imgDst = procCVImg.CvtToGrayImg(imgSrc);
     DisplayImage(imgDst,1);
 }
 
@@ -250,47 +250,7 @@ void MainWindow::slotHistogram()
                               QMessageBox::Yes);
         return;
     }
-
-    cv::Mat imgGray = CvtToGrayImg(imgSrc);
-    int channels[1]={0};//仅用0号通道
-    int histSize[1]={256};//项的数量
-    float hranges[2]={0.0,255.0};//像素的最小和最大值
-    const float *ranges[1];
-    ranges[0]=hranges;
-    cv::MatND hist;//计算图像直方图
-    cv::calcHist(&imgGray,1,channels,cv::Mat(),hist,1,histSize,ranges);
-
-    double maxVal=0;
-    double minVal=0;
-    cv::minMaxLoc(hist,&minVal,&maxVal,0,0);
-
-    int W_HistImg = histSize[0]*4;
-    int H_HistImg = histSize[0]*3;
-    cv::Mat imgHist(H_HistImg,W_HistImg,CV_8UC3,cv::Scalar::all(255));
-    int hpt = static_cast<int>(0.9*H_HistImg);//设置最高点
-    int xUnitLen = static_cast<int>(W_HistImg/histSize[0]);//X轴单位长度
-    int xPt=0;
-    //每个条目都绘制一条垂直线
-    for(int n=0;n<histSize[0];n++)
-    {
-        float binVal = hist.at<float>(n);
-        int intensity = static_cast<int>(binVal*hpt/maxVal);
-        cv::line(imgHist,
-                 cv::Point(xPt,H_HistImg),
-                 cv::Point(xPt,H_HistImg-intensity),
-                 cv::Scalar(0,255,0));//cv::Scalar::all(0)
-        //画x轴刻度
-        if(n%16 == 0)
-        {
-            cv::rectangle(imgHist,
-                          cv::Point(xPt,H_HistImg),
-                          cv::Point(xPt+5,H_HistImg-5),
-                          cv::Scalar(0,0,255));
-        }
-        xPt += xUnitLen;
-    }
-
-    imgDst = imgHist;
+    imgDst = procCVImg.GetHistgramImg(imgSrc,0);//默认0号通道
     DisplayImage(imgDst,1);
 }
 
@@ -305,32 +265,17 @@ void MainWindow::slotHistEqualize()
         return;
     }
 
-    cv::Mat imgHistEqua;
-    cv::equalizeHist(CvtToGrayImg(imgSrc),imgHistEqua);
+    cv::Mat imgGray = procCVImg.CvtToGrayImg(imgSrc);
 
-    imgDst = imgHistEqua;
+    imgDst = procCVImg.EqualizeImgHist(imgGray);
     DisplayImage(imgDst,1);
-}
-
-cv::Mat MainWindow::CvtToGrayImg(cv::Mat matImage)
-{
-    //转换为灰度图
-    cv::Mat imgGray;
-    imgGray.create(matImage.rows,matImage.cols,CV_8U);
-    if(matImage.channels()==3)
-    {
-        cv::cvtColor(matImage,imgGray,CV_BGR2GRAY);
-    }
-    else if(matImage.channels()==1)
-    {
-        imgGray = matImage;
-    }
-    return  imgGray;
 }
 
 void MainWindow::DisplayImage(cv::Mat matImage,int SrcOrDst)
 {
-    cv::Mat image = matImage;
+    //不能使用image=matImage，会影响matImage，进而影响ingSRC
+    cv::Mat image;
+    matImage.copyTo(image);//创建新的拷贝
 
     QLabel *labelImage;
     QLabel *labelImageInfos;
@@ -450,6 +395,7 @@ void MainWindow::DisplayImage(cv::Mat matImage,int SrcOrDst)
             pSrc += image.step;
         }
     }
+
     labelImage->setPixmap(QPixmap::fromImage(qImg));
     //labelImage->resize(labelImage->pixmap()->size());
 }

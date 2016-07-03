@@ -13,10 +13,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    ImageFileOpt/ImageFileOpt.cpp
+    ImageFileOpt/ImageFileOpt.cpp \
+    ImageProcess/CVImgProc.cpp
 
 HEADERS  += mainwindow.h \
-    ImageFileOpt/ImageFileOpt.h
+    ImageFileOpt/ImageFileOpt.h \
+    ImageProcess/CVImgProc.h
 
 FORMS    += mainwindow.ui
 

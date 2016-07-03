@@ -5,7 +5,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 
-#include <opencv2/opencv.hpp>
+#include "../ImageProcess/CVImgProc.h"
 
 class ImageFileOpt : public QWidget
 {
@@ -16,6 +16,9 @@ public:
 public:
     int OpenImage(QFileInfo &infoImgFile);
     int SaveImage(cv::Mat image);
+
+private:
+    CVImgProc procCVImg;
 
 signals:
 

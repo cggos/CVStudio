@@ -11,8 +11,6 @@
 
 #include <QResizeEvent>
 
-
-
 namespace Ui {
 class MainWindow;
 }
@@ -37,7 +35,6 @@ private:
 
 private:
     void DisplayImage(cv::Mat matImage,int SrcOrDst);
-    cv::Mat CvtToGrayImg(cv::Mat matImage);
 
 private slots:
     void slotOpenImgSrc();//Open Source Image
@@ -54,6 +51,7 @@ private:
 
 private:
     ImageFileOpt optImgFile;
+    CVImgProc procCVImg;
 
 private:
     cv::Mat imgSrc;

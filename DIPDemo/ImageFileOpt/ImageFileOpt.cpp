@@ -31,10 +31,6 @@ int ImageFileOpt::OpenImage(QFileInfo &infoImgFile)
 
 int ImageFileOpt::SaveImage(cv::Mat image)
 {
-    if(image.empty())
-    {
-        return -1;
-    }
     QString filePath = QFileDialog
             ::getSaveFileName(this,
                               tr("保存图像"),
@@ -42,8 +38,7 @@ int ImageFileOpt::SaveImage(cv::Mat image)
                               tr("Image Files(*.png *.jpg *.jpeg *.bmp)"));
     if (!filePath.isNull())
     {
-        cv::imwrite(filePath.toLocal8Bit().data(),image);
-        return 0;
+        return procCVImg.SaveImage(image,filePath);
     }
     else
     {
