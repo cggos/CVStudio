@@ -14,13 +14,16 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     ImageFileOpt/ImageFileOpt.cpp \
-    ImageProcess/CVImgProc.cpp
+    ImageProcess/CVImgProc.cpp \
+    SubWindow/SelChannelDlg.cpp
 
 HEADERS  += mainwindow.h \
     ImageFileOpt/ImageFileOpt.h \
-    ImageProcess/CVImgProc.h
+    ImageProcess/CVImgProc.h \
+    SubWindow/SelChannelDlg.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    SubWindow/SelChannelDlg.ui
 
 #CONFIG  += C++11
 QMAKE_CXXFLAGS += -std=c++0x

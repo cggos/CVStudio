@@ -46,3 +46,29 @@ int ImageFileOpt::SaveImage(cv::Mat image)
         return 1;
     }
 }
+
+bool ImageFileOpt::LoadQssFile(const QString &pathQSS, QApplication *qApplication)
+{
+    //加载CSS样式表文件并应用相应样式
+    QFile qssFile(pathQSS);
+    if(qssFile.exists())
+    {
+        qssFile.open(QFile::ReadOnly);
+        if(qssFile.isOpen())
+        {
+            QString qss = QLatin1String(qssFile.readAll());
+            qApplication->setStyleSheet(qss);
+            qssFile.close();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else
+    {
+        QMessageBox::warning(NULL,"Qss文件错误",pathQSS+"找不到！");
+        return false;
+    }
+}

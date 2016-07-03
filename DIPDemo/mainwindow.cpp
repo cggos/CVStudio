@@ -11,9 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     CreateActions();
     CreateMenus();
-
     InitMainWindow();
-
     InitStatusBar();
 
     BeautifyUI();
@@ -39,7 +37,7 @@ void MainWindow::CreateActions()
     actionGray = new QAction(tr("图像灰度化"),this);
     connect(actionGray,SIGNAL(triggered(bool)),this,SLOT(slotGrayImg()));
 
-    actionHist = new QAction(tr("灰度直方图"),this);
+    actionHist = new QAction(tr("灰度直方图..."),this);
     connect(actionHist,SIGNAL(triggered(bool)),this,SLOT(slotHistogram()));
 
     actionHistEqualize = new QAction(tr("直方图均衡化"),this);
@@ -119,23 +117,7 @@ void MainWindow::InitStatusBar()
 
 void MainWindow::BeautifyUI()
 {
-    //加载CSS样式表文件并应用相应样式
-    QFile qssFile(strPathQssFile);
-    if(qssFile.exists())
-    {
-        qssFile.open(QFile::ReadOnly);
-        if(qssFile.isOpen())
-        {
-            QString qss = QLatin1String(qssFile.readAll());
-            qApp->setStyleSheet(qss);
-            qssFile.close();
-        }
-    }
-    else
-    {
-        QMessageBox::warning(NULL,"Qss文件错误",strPathQssFile+"找不到！");
-        return;
-    }
+    optImgFile.LoadQssFile(strPathQssFile,qApp);
 
     //设置应用程序背景色
     QPalette *paletteApp=new QPalette();
@@ -250,8 +232,14 @@ void MainWindow::slotHistogram()
                               QMessageBox::Yes);
         return;
     }
-    imgDst = procCVImg.GetHistgramImg(imgSrc,0);//默认0号通道
-    DisplayImage(imgDst,1);
+
+    SelChannelDlg *dlgSelChannel = new SelChannelDlg(NULL,imgSrc.channels());
+    if(dlgSelChannel->exec() == QDialog::Accepted)
+    {
+        imgDst = procCVImg.GetHistgramImg(imgSrc,dlgSelChannel->indexChannel);
+        DisplayImage(imgDst,1);
+    }
+    delete dlgSelChannel;
 }
 
 void MainWindow::slotHistEqualize()

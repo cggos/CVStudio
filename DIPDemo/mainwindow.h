@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "./ImageFileOpt/ImageFileOpt.h"
+#include "./SubWindow/SelChannelDlg.h"
 
 #include <QMainWindow>
 #include <QMessageBox>

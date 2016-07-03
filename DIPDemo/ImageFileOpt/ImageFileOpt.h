@@ -2,8 +2,10 @@
 #define IMAGEFILEOPT_H
 
 #include <QObject>
+#include <QApplication>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QMessageBox>
 
 #include "../ImageProcess/CVImgProc.h"
 
@@ -16,6 +18,8 @@ public:
 public:
     int OpenImage(QFileInfo &infoImgFile);
     int SaveImage(cv::Mat image);
+
+    bool LoadQssFile(const QString &pathQSS,QApplication* qApplication);
 
 private:
     CVImgProc procCVImg;
