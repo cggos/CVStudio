@@ -22,6 +22,8 @@ public:
 
     cv::Mat EqualizeImgHist(const cv::Mat &imgSrcGray);
 
+    cv::Mat FlipImg(const cv::Mat &imgSrc,int type);
+
 };
 
 #endif // CVIMGPROC_H

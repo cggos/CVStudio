@@ -15,15 +15,18 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     ImageFileOpt/ImageFileOpt.cpp \
     ImageProcess/CVImgProc.cpp \
-    SubWindow/SelChannelDlg.cpp
+    SubWindow/SelChannelDlg.cpp \
+    SubWindow/SelFlipTypeDlg.cpp
 
 HEADERS  += mainwindow.h \
     ImageFileOpt/ImageFileOpt.h \
     ImageProcess/CVImgProc.h \
-    SubWindow/SelChannelDlg.h
+    SubWindow/SelChannelDlg.h \
+    SubWindow/SelFlipTypeDlg.h
 
 FORMS    += mainwindow.ui \
-    SubWindow/SelChannelDlg.ui
+    SubWindow/SelChannelDlg.ui \
+    SubWindow/SelFlipTypeDlg.ui
 
 #CONFIG  += C++11
 QMAKE_CXXFLAGS += -std=c++0x

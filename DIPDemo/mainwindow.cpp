@@ -42,6 +42,9 @@ void MainWindow::CreateActions()
 
     actionHistEqualize = new QAction(tr("直方图均衡化"),this);
     connect(actionHistEqualize,SIGNAL(triggered(bool)),this,SLOT(slotHistEqualize()));
+
+    actionFlip = new QAction(tr("图像反转..."),this);
+    connect(actionFlip,SIGNAL(triggered(bool)),this,SLOT(slotFlipImg()));
 }
 
 //创建菜单，添加菜单项
@@ -60,6 +63,9 @@ void MainWindow::CreateMenus()
     menuPointOperate->addSeparator();
     menuPointOperate->addAction(actionHist);
     menuPointOperate->addAction(actionHistEqualize);
+
+    menuTransformImg = ui->menuBar->addMenu(tr("图像变换"));
+    menuTransformImg->addAction(actionFlip);
 }
 
 //初始化主窗口布局
@@ -209,14 +215,8 @@ void MainWindow::slotSwapImg()
 
 void MainWindow::slotGrayImg()
 {
-    if(imgSrc.empty())
-    {
-        QMessageBox::critical(this,
-                              "图像错误",
-                              "原始图像不存在！",
-                              QMessageBox::Yes);
+    if(!CheckSrcImage())
         return;
-    }
 
     imgDst = procCVImg.CvtToGrayImg(imgSrc);
     DisplayImage(imgDst,1);
@@ -224,14 +224,8 @@ void MainWindow::slotGrayImg()
 
 void MainWindow::slotHistogram()
 {
-    if(imgSrc.empty())
-    {
-        QMessageBox::critical(this,
-                              "图像错误",
-                              "原始图像不存在",
-                              QMessageBox::Yes);
+    if(!CheckSrcImage())
         return;
-    }
 
     SelChannelDlg *dlgSelChannel = new SelChannelDlg(NULL,imgSrc.channels());
     if(dlgSelChannel->exec() == QDialog::Accepted)
@@ -244,19 +238,53 @@ void MainWindow::slotHistogram()
 
 void MainWindow::slotHistEqualize()
 {
+    if(!CheckSrcImage())
+        return;
+    cv::Mat imgGray = procCVImg.CvtToGrayImg(imgSrc);
+    imgDst = procCVImg.EqualizeImgHist(imgGray);
+    DisplayImage(imgDst,1);
+}
+
+void MainWindow::slotFlipImg()
+{
+    if(!CheckSrcImage())
+        return;
+
+    SelFlipTypeDlg dlgSelFlipType;
+    if(dlgSelFlipType.exec() == QDialog::Accepted)
+    {
+        enum FlipType{Horizon=0,Vertical,HV}typeFlip;
+        typeFlip = FlipType(dlgSelFlipType.typeFlip);
+        switch(typeFlip)
+        {
+        case Horizon:
+            imgDst = procCVImg.FlipImg(imgSrc,1);
+            break;
+        case Vertical:
+            imgDst = procCVImg.FlipImg(imgSrc,0);
+            break;
+        case HV:
+            imgDst = procCVImg.FlipImg(imgSrc,-1);
+            break;
+        }
+        DisplayImage(imgDst,1);
+    }
+}
+
+bool MainWindow::CheckSrcImage()
+{
     if(imgSrc.empty())
     {
         QMessageBox::critical(this,
                               "图像错误",
                               "原始图像不存在",
                               QMessageBox::Yes);
-        return;
+        return false;
     }
-
-    cv::Mat imgGray = procCVImg.CvtToGrayImg(imgSrc);
-
-    imgDst = procCVImg.EqualizeImgHist(imgGray);
-    DisplayImage(imgDst,1);
+    else
+    {
+        return true;
+    }
 }
 
 void MainWindow::DisplayImage(cv::Mat matImage,int SrcOrDst)

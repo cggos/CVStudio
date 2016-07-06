@@ -3,6 +3,7 @@
 
 #include "./ImageFileOpt/ImageFileOpt.h"
 #include "./SubWindow/SelChannelDlg.h"
+#include "./SubWindow/SelFlipTypeDlg.h"
 
 #include <QMainWindow>
 #include <QMessageBox>
@@ -35,6 +36,7 @@ private:
     void BeautifyUI();
 
 private:
+    bool CheckSrcImage();
     void DisplayImage(cv::Mat matImage,int SrcOrDst);
 
 private slots:
@@ -46,6 +48,8 @@ private slots:
     void slotGrayImg();//image gray processing
     void slotHistogram();//generate image of gray image histogram
     void slotHistEqualize();//equalize the histogram of image
+
+    void slotFlipImg();//flip image:
 
 private:
     void resizeEvent(QResizeEvent *);
@@ -78,6 +82,9 @@ private:
     QAction *actionGray;
     QAction *actionHist;
     QAction *actionHistEqualize;
+
+    QMenu *menuTransformImg;
+    QAction *actionFlip;
 
     QWidget *widgetMain;
     QGridLayout *layoutGrid;

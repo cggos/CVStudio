@@ -135,3 +135,10 @@ cv::Mat CVImgProc::EqualizeImgHist(const cv::Mat &imgSrcGray)
     cv::equalizeHist(imgSrcGray,imgHistEqua);
     return imgHistEqua;
 }
+
+cv::Mat CVImgProc::FlipImg(const cv::Mat &imgSrc, int type)
+{
+    cv::Mat imgDst;
+    cv::flip(imgSrc,imgDst,type);
+    return imgDst;
+}
