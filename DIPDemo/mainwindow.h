@@ -4,6 +4,7 @@
 #include "./ImageFileOpt/ImageFileOpt.h"
 #include "./SubWindow/SelChannelDlg.h"
 #include "./SubWindow/SelFlipTypeDlg.h"
+#include "./SubWindow/SelColorReduceDivDlg.h"
 
 #include <QMainWindow>
 #include <QMessageBox>
@@ -48,6 +49,7 @@ private slots:
     void slotGrayImg();//image gray processing
     void slotHistogram();//generate image of gray image histogram
     void slotHistEqualize();//equalize the histogram of image
+    void slotColorReduce();//reduce the image color number
 
     void slotFlipImg();//flip image:
 
@@ -82,6 +84,7 @@ private:
     QAction *actionGray;
     QAction *actionHist;
     QAction *actionHistEqualize;
+    QAction *actionColorReduce;
 
     QMenu *menuTransformImg;
     QAction *actionFlip;

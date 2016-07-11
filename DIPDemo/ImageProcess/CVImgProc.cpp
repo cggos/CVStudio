@@ -136,6 +136,35 @@ cv::Mat CVImgProc::EqualizeImgHist(const cv::Mat &imgSrcGray)
     return imgHistEqua;
 }
 
+cv::Mat CVImgProc::colorReduce(const cv::Mat &imgSrc, int div)
+{
+    cv::Mat imgDst;
+    imgSrc.copyTo(imgDst);
+
+    int nl = imgDst.rows;
+    int nc = imgDst.cols;
+    //没有对行进行填补，图像是连续存储的
+    if(imgDst.isContinuous())
+    {
+        nc = nc * nl;
+        nl = 1;
+    }
+    int n = static_cast<int>(log(static_cast<double>(div))/log(2.0))+1;
+    //用来对像素值进行取整的二进制掩模
+    uchar mask = (uchar)0xFF<<n;
+    for(int j=0;j<nl;j++)
+    {
+        uchar *data = imgDst.ptr<uchar>(j);
+        for(int i=0;i<nc;i++)
+        {
+            *data++ = *data&mask + div/2;
+            *data++ = *data&mask + div/2;
+            *data++ = *data&mask + div/2;
+        }
+    }
+    return imgDst;
+}
+
 cv::Mat CVImgProc::FlipImg(const cv::Mat &imgSrc, int type)
 {
     cv::Mat imgDst;

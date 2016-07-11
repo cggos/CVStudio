@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     CreateActions();
     CreateMenus();
+    ui->mainToolBar->hide();
     InitMainWindow();
     InitStatusBar();
 
@@ -43,6 +44,10 @@ void MainWindow::CreateActions()
     actionHistEqualize = new QAction(tr("直方图均衡化"),this);
     connect(actionHistEqualize,SIGNAL(triggered(bool)),this,SLOT(slotHistEqualize()));
 
+    actionColorReduce = new QAction(tr("图像减色..."),this);
+    connect(actionColorReduce,SIGNAL(triggered(bool)),this,SLOT(slotColorReduce()));
+
+    //"图像变换"
     actionFlip = new QAction(tr("图像反转..."),this);
     connect(actionFlip,SIGNAL(triggered(bool)),this,SLOT(slotFlipImg()));
 }
@@ -63,6 +68,8 @@ void MainWindow::CreateMenus()
     menuPointOperate->addSeparator();
     menuPointOperate->addAction(actionHist);
     menuPointOperate->addAction(actionHistEqualize);
+    menuPointOperate->addSeparator();
+    menuPointOperate->addAction(actionColorReduce);
 
     menuTransformImg = ui->menuBar->addMenu(tr("图像变换"));
     menuTransformImg->addAction(actionFlip);
@@ -243,6 +250,19 @@ void MainWindow::slotHistEqualize()
     cv::Mat imgGray = procCVImg.CvtToGrayImg(imgSrc);
     imgDst = procCVImg.EqualizeImgHist(imgGray);
     DisplayImage(imgDst,1);
+}
+
+void MainWindow::slotColorReduce()
+{
+    if(!CheckSrcImage())
+        return;
+    SelColorReduceDivDlg dlgColorReduce;
+    dlgColorReduce.show();
+    if(dlgColorReduce.exec() == QDialog::Accepted)
+    {
+        cv::Mat imgDst = procCVImg.colorReduce(imgSrc,dlgColorReduce.divColorReduce);
+        DisplayImage(imgDst,1);
+    }
 }
 
 void MainWindow::slotFlipImg()
