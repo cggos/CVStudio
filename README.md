@@ -22,5 +22,8 @@ Digital Image Processing Demonstration with OpenCV 2 and Qt 5.
 * Back Project
 * MeanShift
 * CamShift
+* Gaussian Blur(Gaussian Distribution,Gaussian Function)
+* Median filtering
+* Mean filtering
 
 
