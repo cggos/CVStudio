@@ -260,9 +260,14 @@ void MainWindow::slotThresholdImg()
 {
     if(!CheckSrcImage())
         return;
-    cv::Mat imgGray = procCVImg.CvtToGrayImg(imgSrc);
-    imgDst = procCVImg.ThresholdImg(imgGray,60);
-    DisplayImage(imgDst,1);
+
+    SelThreshDlg dlgSelThresh;
+    if(dlgSelThresh.exec() == QDialog::Accepted)
+    {
+        cv::Mat imgGray = procCVImg.CvtToGrayImg(imgSrc);
+        imgDst = procCVImg.ThresholdImg(imgGray,dlgSelThresh.threshValue);
+        DisplayImage(imgDst,1);
+    }
 }
 
 void MainWindow::slotColorReduce()

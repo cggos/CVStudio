@@ -5,6 +5,7 @@
 #include "./SubWindow/SelChannelDlg.h"
 #include "./SubWindow/SelFlipTypeDlg.h"
 #include "./SubWindow/SelColorReduceDivDlg.h"
+#include "./SubWindow/SelThreshDlg.h"
 
 #include <QMainWindow>
 #include <QMessageBox>
