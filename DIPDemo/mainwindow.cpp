@@ -44,6 +44,9 @@ void MainWindow::CreateActions()
     actionHistEqualize = new QAction(tr("直方图均衡化"),this);
     connect(actionHistEqualize,SIGNAL(triggered(bool)),this,SLOT(slotHistEqualize()));
 
+    actionThresholdImg = new QAction(tr("二值化图像..."),this);
+    connect(actionThresholdImg,SIGNAL(triggered(bool)),this,SLOT(slotThresholdImg()));
+
     actionColorReduce = new QAction(tr("图像减色..."),this);
     connect(actionColorReduce,SIGNAL(triggered(bool)),this,SLOT(slotColorReduce()));
 
@@ -68,6 +71,7 @@ void MainWindow::CreateMenus()
     menuPointOperate->addSeparator();
     menuPointOperate->addAction(actionHist);
     menuPointOperate->addAction(actionHistEqualize);
+    menuPointOperate->addAction(actionThresholdImg);
     menuPointOperate->addSeparator();
     menuPointOperate->addAction(actionColorReduce);
 
@@ -249,6 +253,15 @@ void MainWindow::slotHistEqualize()
         return;
     cv::Mat imgGray = procCVImg.CvtToGrayImg(imgSrc);
     imgDst = procCVImg.EqualizeImgHist(imgGray);
+    DisplayImage(imgDst,1);
+}
+
+void MainWindow::slotThresholdImg()
+{
+    if(!CheckSrcImage())
+        return;
+    cv::Mat imgGray = procCVImg.CvtToGrayImg(imgSrc);
+    imgDst = procCVImg.ThresholdImg(imgGray,60);
     DisplayImage(imgDst,1);
 }
 

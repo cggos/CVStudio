@@ -136,6 +136,13 @@ cv::Mat CVImgProc::EqualizeImgHist(const cv::Mat &imgSrcGray)
     return imgHistEqua;
 }
 
+cv::Mat CVImgProc::ThresholdImg(const cv::Mat &imgSrcGray,double thresh)
+{
+    cv::Mat imgThreshold;
+    cv::threshold(imgSrcGray,imgThreshold,thresh,255,cv::THRESH_BINARY);
+    return imgThreshold;
+}
+
 cv::Mat CVImgProc::colorReduce(const cv::Mat &imgSrc, int div)
 {
     cv::Mat imgDst;

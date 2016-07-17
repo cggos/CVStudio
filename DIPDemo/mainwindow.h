@@ -49,6 +49,7 @@ private slots:
     void slotGrayImg();//image gray processing
     void slotHistogram();//generate image of gray image histogram
     void slotHistEqualize();//equalize the histogram of image
+    void slotThresholdImg();//
     void slotColorReduce();//reduce the image color number
 
     void slotFlipImg();//flip image:
@@ -84,6 +85,7 @@ private:
     QAction *actionGray;
     QAction *actionHist;
     QAction *actionHistEqualize;
+    QAction *actionThresholdImg;
     QAction *actionColorReduce;
 
     QMenu *menuTransformImg;
