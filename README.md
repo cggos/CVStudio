@@ -1,4 +1,4 @@
-# DIP-OpenCV2Qt5-Demo
+# DIPDemoQt5
 
 Digital Image Processing Demonstration with OpenCV 2 and Qt 5.
 
