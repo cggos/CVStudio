@@ -11,6 +11,8 @@ Digital Image Processing Demonstration with OpenCV 2 and Qt 5.
 * OpenCV: OpenCV 2.4.9 for Windows
 
 ## Summary of *Computer Vision with OpenCV 2*
+Source Code of the Book: [https://github.com/vinjn/opencv-2-cookbook-src](https://github.com/vinjn/opencv-2-cookbook-src "OpenCV 2 计算机视觉编程手册")
+### Key Points
 * Salt and pepper noise
 * Color reduce
 * Image sharpening
@@ -25,5 +27,3 @@ Digital Image Processing Demonstration with OpenCV 2 and Qt 5.
 * Gaussian Blur(Gaussian Distribution,Gaussian Function)
 * Median filtering
 * Mean filtering
-
-
