@@ -53,6 +53,10 @@ void MainWindow::CreateActions()
     //"图像变换"
     actionFlip = new QAction(tr("图像反转..."),this);
     connect(actionFlip,SIGNAL(triggered(bool)),this,SLOT(slotFlipImg()));
+
+    //"目标检测"
+    actionSkinDetect = new QAction(tr("肤色检测"),this);
+    connect(actionSkinDetect,SIGNAL(triggered(bool)),this,SLOT(slotDetectSkin()));
 }
 
 //创建菜单，添加菜单项
@@ -77,6 +81,9 @@ void MainWindow::CreateMenus()
 
     menuTransformImg = ui->menuBar->addMenu(tr("图像变换"));
     menuTransformImg->addAction(actionFlip);
+
+    menuDetect = ui->menuBar->addMenu(tr("目标检测"));
+    menuDetect->addAction(actionSkinDetect);
 }
 
 //初始化主窗口布局
@@ -307,6 +314,15 @@ void MainWindow::slotFlipImg()
         }
         DisplayImage(imgDst,1);
     }
+}
+
+void MainWindow::slotDetectSkin()
+{
+    if(!CheckSrcImage())
+        return;
+
+    imgDst = SkinDetector::GetSkin_RGBHCbCr(imgSrc);
+    DisplayImage(imgDst,1);
 }
 
 bool MainWindow::CheckSrcImage()

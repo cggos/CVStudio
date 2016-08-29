@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     SubWindow/SelChannelDlg.cpp \
     SubWindow/SelFlipTypeDlg.cpp \
     SubWindow/SelColorReduceDivDlg.cpp \
-    SubWindow/SelThreshDlg.cpp
+    SubWindow/SelThreshDlg.cpp \
+    ImageProcess/SkinDetector.cpp
 
 HEADERS  += mainwindow.h \
     ImageFileOpt/ImageFileOpt.h \
@@ -26,7 +27,8 @@ HEADERS  += mainwindow.h \
     SubWindow/SelChannelDlg.h \
     SubWindow/SelFlipTypeDlg.h \
     SubWindow/SelColorReduceDivDlg.h \
-    SubWindow/SelThreshDlg.h
+    SubWindow/SelThreshDlg.h \
+    ImageProcess/SkinDetector.h
 
 FORMS    += mainwindow.ui \
     SubWindow/SelChannelDlg.ui \

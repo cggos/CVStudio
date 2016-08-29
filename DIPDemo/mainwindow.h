@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "./ImageFileOpt/ImageFileOpt.h"
+#include "./ImageProcess/SkinDetector.h"
 #include "./SubWindow/SelChannelDlg.h"
 #include "./SubWindow/SelFlipTypeDlg.h"
 #include "./SubWindow/SelColorReduceDivDlg.h"
@@ -55,6 +56,8 @@ private slots:
 
     void slotFlipImg();//flip image:
 
+    void slotDetectSkin();//detect skin color
+
 private:
     void resizeEvent(QResizeEvent *);
 
@@ -91,6 +94,9 @@ private:
 
     QMenu *menuTransformImg;
     QAction *actionFlip;
+
+    QMenu *menuDetect;
+    QAction *actionSkinDetect;
 
     QWidget *widgetMain;
     QGridLayout *layoutGrid;
