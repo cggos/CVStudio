@@ -402,7 +402,7 @@ void MainWindow::DisplayImage(cv::Mat matImage,int SrcOrDst)
             }
             else
             {
-                if(W_Img/H_Img >= W_LabelImg/H_LabelImg)
+                if(W_Img/(float)H_Img >= W_LabelImg/(float)H_LabelImg)
                 {
                     cv::resize(image,image,
                                cv::Size(W_LabelImg,H_Img/((float)W_Img/W_LabelImg)));
@@ -423,7 +423,7 @@ void MainWindow::DisplayImage(cv::Mat matImage,int SrcOrDst)
             }
             else
             {
-                if(H_Img/W_Img <= H_LabelImg/W_LabelImg)
+                if(H_Img/(float)W_Img <= H_LabelImg/(float)W_LabelImg)
                 {
                     cv::resize(image,image,
                                cv::Size(W_LabelImg,H_Img/((float)W_Img/W_LabelImg)));
