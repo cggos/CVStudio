@@ -39,6 +39,8 @@ FORMS    += mainwindow.ui \
 #CONFIG  += C++11
 QMAKE_CXXFLAGS += -std=c++0x
 
+win32 {
+
 OpenCV_RootDir = D:\OpenCV249\
 
 INCLUDEPATH += $$OpenCV_RootDir\build\include\
@@ -55,6 +57,19 @@ LIBS += $$OpenCV_RootDir\build_qt5\lib\libopencv_calib3d249.dll.a\
   $$OpenCV_RootDir\build_qt5\lib\libopencv_ml249.dll.a\
   $$OpenCV_RootDir\build_qt5\lib\libopencv_objdetect249.dll.a\
   $$OpenCV_RootDir\build_qt5\lib\libopencv_video249.dll.a
+}
+
+unix
+{
+INCLUDEPATH += /usr/local/include/
+
+LIBS += /usr/local/lib/libopencv_core.so\
+/usr/local/lib/libopencv_highgui.so\
+/usr/local/lib/libopencv_imgcodecs.so\
+/usr/local/lib/libopencv_imgproc.so\
+/usr/local/lib/libopencv_ml.so
+}
+
 
 
 RESOURCES += \
