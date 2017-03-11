@@ -34,6 +34,10 @@ void MainWindow::CreateActions()
     actionSwapImg = new QAction(tr("原始目标图像对调"),this);
     connect(actionSwapImg,SIGNAL(triggered(bool)),this,SLOT(slotSwapImg()));
 
+    //设备
+    actionOpenCamera = new QAction(tr("打开摄像头"),this);
+    connect(actionOpenCamera,SIGNAL(triggered(bool)),this,SLOT(slotOpenCamera()));
+
     //“点运算”
     actionGray = new QAction(tr("图像灰度化"),this);
     connect(actionGray,SIGNAL(triggered(bool)),this,SLOT(slotGrayImg()));
@@ -69,6 +73,9 @@ void MainWindow::CreateMenus()
     menuFile->addAction(actionSaveImgDst);
     menuFile->addSeparator();
     menuFile->addAction(actionSwapImg);
+
+    menuDevices = ui->menuBar->addMenu(tr("设备"));
+    menuDevices->addAction(actionOpenCamera);
 
     menuPointOperate = ui->menuBar->addMenu(tr("点运算"));
     menuPointOperate->addAction(actionGray);
@@ -229,6 +236,41 @@ void MainWindow::slotSwapImg()
 
     DisplayImage(imgSrc,0);
     DisplayImage(imgDst,1);
+}
+
+void MainWindow::slotOpenCamera()
+{
+    if(captureVideo.isOpened()){
+        captureVideo.release();
+    }
+
+    captureVideo.open(0);
+
+    if(captureVideo.isOpened()){
+
+        timerCaptureVideo = new QTimer(this);
+        timerCaptureVideo->setInterval(100);
+        connect(timerCaptureVideo, SIGNAL(timeout()), this, SLOT(CaptureFrame()));
+
+
+        matFrame = cv::Mat::zeros(captureVideo.get(CV_CAP_PROP_FRAME_HEIGHT), captureVideo.get(CV_CAP_PROP_FRAME_WIDTH), CV_8UC3);
+
+        captureVideo>>matFrame;
+        if(!matFrame.empty()){
+            DisplayImage(matFrame,0);
+        }
+
+
+        timerCaptureVideo->start();
+    }
+}
+
+void MainWindow::CaptureFrame()
+{
+    captureVideo>>matFrame;
+    if(!matFrame.empty()){
+        DisplayImage(matFrame,0);
+        }
 }
 
 void MainWindow::slotGrayImg()

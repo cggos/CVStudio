@@ -16,6 +16,8 @@
 
 #include <QResizeEvent>
 
+#include <QTimer>
+
 namespace Ui {
 class MainWindow;
 }
@@ -47,6 +49,8 @@ private slots:
     void slotSaveImgSrc();//Save Source Image
     void slotSaveImgDst();//Save Destination Image
     void slotSwapImg();//Swap the Source Image and Destination Image
+
+    void slotOpenCamera();
 
     void slotGrayImg();//image gray processing
     void slotHistogram();//generate image of gray image histogram
@@ -85,6 +89,9 @@ private:
     QAction *actionSaveImgDst;
     QAction *actionSwapImg;
 
+    QMenu *menuDevices;
+    QAction *actionOpenCamera;
+
     QMenu *menuPointOperate;
     QAction *actionGray;
     QAction *actionHist;
@@ -113,6 +120,14 @@ private:
 private:
     const QString strPathQssFile;
     const QColor clrBKApp;
+
+public:
+    cv::Mat matFrame;
+    cv::VideoCapture captureVideo;
+    QTimer *timerCaptureVideo;
+
+    public slots:
+    void CaptureFrame();
 };
 
 #endif // MAINWINDOW_H

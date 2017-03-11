@@ -67,7 +67,9 @@ LIBS += /usr/local/lib/libopencv_core.so\
 /usr/local/lib/libopencv_highgui.so\
 /usr/local/lib/libopencv_imgcodecs.so\
 /usr/local/lib/libopencv_imgproc.so\
-/usr/local/lib/libopencv_ml.so
+/usr/local/lib/libopencv_ml.so\
+/usr/local/lib/libopencv_video.so\
+/usr/local/lib/libopencv_videoio.so
 }
 
 
