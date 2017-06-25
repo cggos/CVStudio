@@ -27,3 +27,6 @@ Source Code of the Book: [https://github.com/vinjn/opencv-2-cookbook-src](https:
 * Gaussian Blur(Gaussian Distribution,Gaussian Function)
 * Median filtering
 * Mean filtering
+
+## Skin Detection
+* [Skin Color Thresholding with OpenCV](http://www.bytefish.de/blog/opencv/skin_color_thresholding/)

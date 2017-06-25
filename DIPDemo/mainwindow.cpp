@@ -253,11 +253,11 @@ void MainWindow::slotOpenCamera()
         connect(timerCaptureVideo, SIGNAL(timeout()), this, SLOT(CaptureFrame()));
 
 
-        matFrame = cv::Mat::zeros(captureVideo.get(CV_CAP_PROP_FRAME_HEIGHT), captureVideo.get(CV_CAP_PROP_FRAME_WIDTH), CV_8UC3);
+        imgSrc = cv::Mat::zeros(captureVideo.get(CV_CAP_PROP_FRAME_HEIGHT), captureVideo.get(CV_CAP_PROP_FRAME_WIDTH), CV_8UC3);
 
-        captureVideo>>matFrame;
-        if(!matFrame.empty()){
-            DisplayImage(matFrame,0);
+        captureVideo>>imgSrc;
+        if(!imgSrc.empty()){
+            DisplayImage(imgSrc,0);
         }
 
 
@@ -267,9 +267,16 @@ void MainWindow::slotOpenCamera()
 
 void MainWindow::CaptureFrame()
 {
-    captureVideo>>matFrame;
-    if(!matFrame.empty()){
-        DisplayImage(matFrame,0);
+    captureVideo>>imgSrc;
+    if(!imgSrc.empty()){
+        DisplayImage(imgSrc,0);
+        switch(typeDetect)
+        {
+        case DETECTOR_SKIN:
+            imgDst = SkinDetector::GetSkin_RGBHCbCr(imgSrc);
+            DisplayImage(imgDst,1);
+            break;
+        }
         }
 }
 
@@ -362,6 +369,8 @@ void MainWindow::slotDetectSkin()
 {
     if(!CheckSrcImage())
         return;
+
+    typeDetect = DETECTOR_SKIN;
 
     imgDst = SkinDetector::GetSkin_RGBHCbCr(imgSrc);
     DisplayImage(imgDst,1);
