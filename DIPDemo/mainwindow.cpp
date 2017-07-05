@@ -355,7 +355,7 @@ void MainWindow::slotColorReduce()
     dlgColorReduce.show();
     if(dlgColorReduce.exec() == QDialog::Accepted)
     {
-        cv::Mat imgDst = procCVImg.colorReduce(imgSrc,dlgColorReduce.divColorReduce);
+        imgDst = procCVImg.colorReduce(imgSrc,dlgColorReduce.divColorReduce);
         DisplayImage(imgDst,1);
     }
 }
@@ -364,7 +364,7 @@ void MainWindow::slotSaltImage()
 {
     if(!CheckSrcImage())
         return;
-    cv::Mat imgDst = procCVImg.SaltImage(imgSrc);
+    imgDst = procCVImg.SaltImage(imgSrc);
     DisplayImage(imgDst,1);
 }
 
