@@ -198,3 +198,17 @@ cv::Mat CVImgProc::FlipImg(const cv::Mat &imgSrc, int type)
     cv::flip(imgSrc,imgDst,type);
     return imgDst;
 }
+
+cv::Mat CVImgProc::Filter2DImg(const cv::Mat &imgSrcGray)
+{
+    cv::Mat kernel(3,3,CV_32F,cv::Scalar(0));
+    kernel.at<float>(1,1) =  5.0f;
+    kernel.at<float>(0,1) = -1.0f;
+    kernel.at<float>(2,1) = -1.0f;
+    kernel.at<float>(1,0) = -1.0f;
+    kernel.at<float>(1,2) = -1.0f;
+
+    cv::Mat imgDst;
+    cv::filter2D(imgSrcGray,imgDst,imgSrcGray.depth(),kernel);
+    return imgDst;
+}

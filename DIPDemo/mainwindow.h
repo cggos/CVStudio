@@ -64,6 +64,8 @@ private slots:
 
     void slotFlipImg();//flip image:
 
+    void slotFilter2D();
+
     void slotDetectSkin();//detect skin color
 
 private:
@@ -109,6 +111,9 @@ private:
 
     QMenu *menuTransformImg;
     QAction *actionFlip;
+
+    QMenu *menuFilterImg;
+    QAction *actionFilter2D;
 
     QMenu *menuDetect;
     QAction *actionSkinDetect;

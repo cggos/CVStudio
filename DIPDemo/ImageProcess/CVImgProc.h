@@ -30,6 +30,7 @@ public:
 
     cv::Mat FlipImg(const cv::Mat &imgSrc,int type);
 
+    cv::Mat Filter2DImg(const cv::Mat &imgSrcGray);
 };
 
 #endif // CVIMGPROC_H

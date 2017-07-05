@@ -64,6 +64,10 @@ void MainWindow::CreateActions()
     actionFlip = new QAction(tr("图像反转..."),this);
     connect(actionFlip,SIGNAL(triggered(bool)),this,SLOT(slotFlipImg()));
 
+    //"图像滤波"
+    actionFilter2D = new QAction(tr("Filter2D..."),this);
+    connect(actionFilter2D,SIGNAL(triggered(bool)),this,SLOT(slotFilter2D()));
+
     //"目标检测"
     actionSkinDetect = new QAction(tr("肤色检测"),this);
     connect(actionSkinDetect,SIGNAL(triggered(bool)),this,SLOT(slotDetectSkin()));
@@ -96,6 +100,9 @@ void MainWindow::CreateMenus()
 
     menuTransformImg = ui->menuBar->addMenu(tr("图像变换"));
     menuTransformImg->addAction(actionFlip);
+
+    menuFilterImg = ui->menuBar->addMenu(tr("图像滤波"));
+    menuFilterImg->addAction(actionFilter2D);
 
     menuDetect = ui->menuBar->addMenu(tr("目标检测"));
     menuDetect->addAction(actionSkinDetect);
@@ -392,6 +399,14 @@ void MainWindow::slotFlipImg()
         }
         DisplayImage(imgDst,1);
     }
+}
+
+void MainWindow::slotFilter2D()
+{
+    if(!CheckSrcImage())
+        return;
+    imgDst = procCVImg.Filter2DImg(procCVImg.CvtToGrayImg(imgSrc));
+    DisplayImage(imgDst,1);
 }
 
 void MainWindow::slotDetectSkin()
