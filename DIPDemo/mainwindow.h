@@ -53,6 +53,7 @@ private slots:
     void slotSwapImg();//Swap the Source Image and Destination Image
 
     void slotOpenCamera();
+    void slotCloseCamera();
 
     void slotGrayImg();//image gray processing
     void slotHistogram();//generate image of gray image histogram
@@ -95,6 +96,7 @@ private:
 
     QMenu *menuDevices;
     QAction *actionOpenCamera;
+    QAction *actionCloseCamera;
 
     QMenu *menuPointOperate;
     QAction *actionGray;

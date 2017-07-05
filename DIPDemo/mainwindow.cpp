@@ -38,6 +38,9 @@ void MainWindow::CreateActions()
     actionOpenCamera = new QAction(tr("打开摄像头"),this);
     connect(actionOpenCamera,SIGNAL(triggered(bool)),this,SLOT(slotOpenCamera()));
 
+    actionCloseCamera = new QAction(tr("关闭摄像头"),this);
+    connect(actionCloseCamera,SIGNAL(triggered(bool)),this,SLOT(slotCloseCamera()));
+
     //“点运算”
     actionGray = new QAction(tr("图像灰度化"),this);
     connect(actionGray,SIGNAL(triggered(bool)),this,SLOT(slotGrayImg()));
@@ -76,6 +79,7 @@ void MainWindow::CreateMenus()
 
     menuDevices = ui->menuBar->addMenu(tr("设备"));
     menuDevices->addAction(actionOpenCamera);
+    menuDevices->addAction(actionCloseCamera);
 
     menuPointOperate = ui->menuBar->addMenu(tr("点运算"));
     menuPointOperate->addAction(actionGray);
@@ -246,29 +250,42 @@ void MainWindow::slotOpenCamera()
 
     captureVideo.open(0);
 
-    if(captureVideo.isOpened()){
-
+    if(captureVideo.isOpened())
+    {
         timerCaptureVideo = new QTimer(this);
         timerCaptureVideo->setInterval(100);
         connect(timerCaptureVideo, SIGNAL(timeout()), this, SLOT(CaptureFrame()));
 
-
         imgSrc = cv::Mat::zeros(captureVideo.get(CV_CAP_PROP_FRAME_HEIGHT), captureVideo.get(CV_CAP_PROP_FRAME_WIDTH), CV_8UC3);
 
         captureVideo>>imgSrc;
-        if(!imgSrc.empty()){
+
+        if(!imgSrc.empty())
+        {
             DisplayImage(imgSrc,0);
         }
 
-
         timerCaptureVideo->start();
+    }
+}
+
+void MainWindow::slotCloseCamera()
+{
+    if(timerCaptureVideo->isActive())
+    {
+        timerCaptureVideo->stop();
+    }
+
+    if(captureVideo.isOpened()){
+        captureVideo.release();
     }
 }
 
 void MainWindow::CaptureFrame()
 {
     captureVideo>>imgSrc;
-    if(!imgSrc.empty()){
+    if(!imgSrc.empty())
+    {
         DisplayImage(imgSrc,0);
         switch(typeDetect)
         {
@@ -277,7 +294,7 @@ void MainWindow::CaptureFrame()
             DisplayImage(imgDst,1);
             break;
         }
-        }
+    }
 }
 
 void MainWindow::slotGrayImg()
