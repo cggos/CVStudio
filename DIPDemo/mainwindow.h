@@ -60,6 +60,7 @@ private slots:
     void slotHistEqualize();//equalize the histogram of image
     void slotThresholdImg();//
     void slotColorReduce();//reduce the image color number
+    void slotSaltImage();
 
     void slotFlipImg();//flip image:
 
@@ -104,6 +105,7 @@ private:
     QAction *actionHistEqualize;
     QAction *actionThresholdImg;
     QAction *actionColorReduce;
+    QAction *actionSaltImage;
 
     QMenu *menuTransformImg;
     QAction *actionFlip;

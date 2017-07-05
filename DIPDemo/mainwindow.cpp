@@ -57,6 +57,9 @@ void MainWindow::CreateActions()
     actionColorReduce = new QAction(tr("图像减色..."),this);
     connect(actionColorReduce,SIGNAL(triggered(bool)),this,SLOT(slotColorReduce()));
 
+    actionSaltImage = new QAction(tr("椒盐噪点"),this);
+    connect(actionSaltImage,SIGNAL(triggered(bool)),this,SLOT(slotSaltImage()));
+
     //"图像变换"
     actionFlip = new QAction(tr("图像反转..."),this);
     connect(actionFlip,SIGNAL(triggered(bool)),this,SLOT(slotFlipImg()));
@@ -89,6 +92,7 @@ void MainWindow::CreateMenus()
     menuPointOperate->addAction(actionThresholdImg);
     menuPointOperate->addSeparator();
     menuPointOperate->addAction(actionColorReduce);
+    menuPointOperate->addAction(actionSaltImage);
 
     menuTransformImg = ui->menuBar->addMenu(tr("图像变换"));
     menuTransformImg->addAction(actionFlip);
@@ -354,6 +358,14 @@ void MainWindow::slotColorReduce()
         cv::Mat imgDst = procCVImg.colorReduce(imgSrc,dlgColorReduce.divColorReduce);
         DisplayImage(imgDst,1);
     }
+}
+
+void MainWindow::slotSaltImage()
+{
+    if(!CheckSrcImage())
+        return;
+    cv::Mat imgDst = procCVImg.SaltImage(imgSrc);
+    DisplayImage(imgDst,1);
 }
 
 void MainWindow::slotFlipImg()

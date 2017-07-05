@@ -172,6 +172,26 @@ cv::Mat CVImgProc::colorReduce(const cv::Mat &imgSrc, int div)
     return imgDst;
 }
 
+cv::Mat CVImgProc::SaltImage(const cv::Mat &imgSrc, int n)
+{
+    cv::Mat imgDst;
+    imgSrc.copyTo(imgDst);
+
+    for(int k=0;k<n;k++){
+        int i = qrand()%imgDst.cols;
+        int j = qrand()%imgDst.rows;
+        if(imgDst.channels() == 1){
+            imgDst.at<uchar>(j,i) = 255;
+        }else if(imgDst.channels() == 3){
+            imgDst.at<cv::Vec3b>(j,i)[0] = 255;
+            imgDst.at<cv::Vec3b>(j,i)[1] = 255;
+            imgDst.at<cv::Vec3b>(j,i)[2] = 255;
+        }
+    }
+
+    return imgDst;
+}
+
 cv::Mat CVImgProc::FlipImg(const cv::Mat &imgSrc, int type)
 {
     cv::Mat imgDst;

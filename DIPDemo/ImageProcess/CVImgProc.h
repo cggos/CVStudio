@@ -26,6 +26,8 @@ public:
 
     cv::Mat colorReduce(const cv::Mat &imgSrc,int div=64);
 
+    cv::Mat SaltImage(const cv::Mat &imgSrc,int n=8000);
+
     cv::Mat FlipImg(const cv::Mat &imgSrc,int type);
 
 };
