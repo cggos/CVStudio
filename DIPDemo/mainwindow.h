@@ -18,8 +18,6 @@
 
 #include <QTimer>
 
-enum DETECT_TYPE{ DETECTOR_NULL, DETECTOR_SKIN };
-
 namespace Ui {
 class MainWindow;
 }
@@ -76,8 +74,6 @@ private:
     CVImgProc procCVImg;
 
 private:
-    DETECT_TYPE typeDetect;
-
     cv::Mat imgSrc;
     cv::Mat imgDst;
 
@@ -137,6 +133,7 @@ private:
 private:
     cv::VideoCapture captureVideo;
     QTimer *timerCaptureVideo;
+    cv::Mat (*processImg)(const cv::Mat &imgSrc);
 
 private slots:
     void CaptureFrame();

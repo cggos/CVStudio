@@ -5,7 +5,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     strPathQssFile(":/QSS/QSS/StyleSheet.qss"),
-    clrBKApp(QColor(205,215,230))
+    clrBKApp(QColor(205,215,230)),
+    processImg(NULL)
 {
     ui->setupUi(this);
 
@@ -263,8 +264,9 @@ void MainWindow::slotOpenCamera()
 
     if(captureVideo.isOpened())
     {
+        double nFrameRate = captureVideo.get(CV_CAP_PROP_FPS);
         timerCaptureVideo = new QTimer(this);
-        timerCaptureVideo->setInterval(100);
+        timerCaptureVideo->setInterval(1000./nFrameRate);
         connect(timerCaptureVideo, SIGNAL(timeout()), this, SLOT(CaptureFrame()));
 
         imgSrc = cv::Mat::zeros(captureVideo.get(CV_CAP_PROP_FRAME_HEIGHT), captureVideo.get(CV_CAP_PROP_FRAME_WIDTH), CV_8UC3);
@@ -298,13 +300,12 @@ void MainWindow::CaptureFrame()
     if(!imgSrc.empty())
     {
         DisplayImage(imgSrc,0);
-        switch(typeDetect)
-        {
-        case DETECTOR_SKIN:
-            imgDst = SkinDetector::GetSkin_RGBHCbCr(imgSrc);
-            DisplayImage(imgDst,1);
-            break;
-        }
+
+        if(processImg == NULL)
+            return;
+        imgDst = processImg(imgSrc);
+
+        DisplayImage(imgDst,1);
     }
 }
 
@@ -414,7 +415,10 @@ void MainWindow::slotDetectSkin()
     if(!CheckSrcImage())
         return;
 
-    typeDetect = DETECTOR_SKIN;
+    if(captureVideo.isOpened()){
+        processImg = SkinDetector::GetSkin_RGBHCbCr;
+        return;
+    }
 
     imgDst = SkinDetector::GetSkin_RGBHCbCr(imgSrc);
     DisplayImage(imgDst,1);
