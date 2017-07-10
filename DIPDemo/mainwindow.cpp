@@ -115,8 +115,8 @@ void MainWindow::InitMainWindow()
     //原图像和目标图像标题显示区域定义
     labelSrcImgTitle = new QLabel(tr("Source Image Title"));
     labelDstImgTitle = new QLabel(tr("Destination Image Title"));
-    labelSrcImgTitle->setObjectName("objLabelSrcImgTitle");
-    labelDstImgTitle->setObjectName("objLabelDstImgTitle");
+    labelSrcImgTitle->setObjectName(tr("objLabelSrcImgTitle"));
+    labelDstImgTitle->setObjectName(tr("objLabelDstImgTitle"));
     labelSrcImgTitle->setAlignment(Qt::AlignCenter);
     labelDstImgTitle->setAlignment(Qt::AlignCenter);
     labelSrcImgTitle->setFrameShape(QFrame::Box);
@@ -124,8 +124,8 @@ void MainWindow::InitMainWindow()
     //原图像和目标图像显示区域定义
     labelSrcImg = new QLabel(tr("Source Image"));
     labelDstImg = new QLabel(tr("Destination Image"));
-    labelSrcImg->setObjectName("objLabelSrcImg");
-    labelDstImg->setObjectName("objLabelDstImg");
+    labelSrcImg->setObjectName(tr("objLabelSrcImg"));
+    labelDstImg->setObjectName(tr("objLabelDstImg"));
     labelSrcImg->setAlignment(Qt::AlignCenter);
     labelDstImg->setAlignment(Qt::AlignCenter);
     labelSrcImg->setFrameShape(QFrame::Box);
@@ -133,8 +133,8 @@ void MainWindow::InitMainWindow()
     //原图像和目标图像信息显示区域定义
     labelSrcImgInfos = new QLabel(tr("Source Image Infos"));
     labelDstImgInfos = new QLabel(tr("Destination Image Infos"));
-    labelSrcImgInfos->setObjectName("objLabelSrcImgInfos");
-    labelDstImgInfos->setObjectName("objLabelDstImgInfos");
+    labelSrcImgInfos->setObjectName(tr("objLabelSrcImgInfos"));
+    labelDstImgInfos->setObjectName(tr("objLabelDstImgInfos"));
     labelSrcImgInfos->setAlignment(Qt::AlignCenter);
     labelDstImgInfos->setAlignment(Qt::AlignCenter);
     labelSrcImgInfos->setFrameShape(QFrame::Box);
@@ -158,7 +158,7 @@ void MainWindow::InitMainWindow()
 
 void MainWindow::InitStatusBar()
 {
-    labelSrcImgPath = new QLabel("Source Image Path");
+    labelSrcImgPath = new QLabel(tr("Source Image Path"));
     ui->statusBar->addWidget(labelSrcImgPath);
 }
 
@@ -204,15 +204,15 @@ void MainWindow::slotSaveImgSrc()
     if(ret == 0)
     {
         QMessageBox::information(this,
-                                 "保存成功",
-                                 "保存原始图像成功",
+                                 tr("保存成功"),
+                                 tr("保存原始图像成功"),
                                  QMessageBox::Yes);
     }
     else if(ret == -1)
     {
         QMessageBox::critical(this,
-                              "图像错误",
-                              "原始图像不存在",
+                              tr("图像错误"),
+                              tr("原始图像不存在"),
                               QMessageBox::Yes);
     }
 }
@@ -223,15 +223,15 @@ void MainWindow::slotSaveImgDst()
     if(ret == 0)
     {
         QMessageBox::information(this,
-                                 "保存成功",
-                                 "保存目标图像成功",
+                                 tr("保存成功"),
+                                 tr("保存目标图像成功"),
                                  QMessageBox::Yes);
     }
     else if(ret == -1)
     {
         QMessageBox::critical(this,
-                              "图像错误",
-                              "目标图像不存在",
+                              tr("图像错误"),
+                              tr("目标图像不存在"),
                               QMessageBox::Yes);
     }
 }
@@ -241,8 +241,8 @@ void MainWindow::slotSwapImg()
     if(imgSrc.empty() || imgDst.empty())
     {
         QMessageBox::critical(this,
-                              "图像错误",
-                              "原始图像或目标图像不存在！",
+                              tr("图像错误"),
+                              tr("原始图像或目标图像不存在！"),
                               QMessageBox::Yes);
         return;
     }
@@ -429,8 +429,8 @@ bool MainWindow::CheckSrcImage()
     if(imgSrc.empty())
     {
         QMessageBox::critical(this,
-                              "图像错误",
-                              "原始图像不存在",
+                              tr("图像错误"),
+                              tr("原始图像不存在"),
                               QMessageBox::Yes);
         return false;
     }
@@ -455,15 +455,15 @@ void MainWindow::DisplayImage(cv::Mat matImage,int SrcOrDst)
 
     if(SrcOrDst==0)
     {
-        labelSrcImgTitle->setText("源图像");
+        labelSrcImgTitle->setText(tr("源图像"));
         labelImage = labelSrcImg;
         labelImageInfos = labelSrcImgInfos;
 
-        labelSrcImgPath->setText("原始图像路径："+pathSrcImg);
+        labelSrcImgPath->setText(tr("原始图像路径：")+pathSrcImg);
     }
     else
     {
-        labelDstImgTitle->setText("目标图像");
+        labelDstImgTitle->setText(tr("目标图像"));
         labelImage = labelDstImg;
         labelImageInfos = labelDstImgInfos;
     }
@@ -472,11 +472,11 @@ void MainWindow::DisplayImage(cv::Mat matImage,int SrcOrDst)
     int H_LabelImg = labelImage->height();
 
     //显示图像信息
-    labelImageInfos->setText("宽度："
+    labelImageInfos->setText(tr("宽度：")
                              + QString::number(W_Img)
-                             + "，高度："
+                             + tr("，高度：")
                              + QString::number(H_Img)
-                             + "，通道数："
+                             + tr("，通道数：")
                              + QString::number(N_Channels));
 
     //根据显示图像的label大小改变图像尺寸
