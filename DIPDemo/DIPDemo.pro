@@ -59,8 +59,7 @@ LIBS += $$OpenCV_RootDir\build_qt5\lib\libopencv_calib3d249.dll.a\
   $$OpenCV_RootDir\build_qt5\lib\libopencv_video249.dll.a
 }
 
-unix
-{
+unix {
 INCLUDEPATH += /usr/local/include/
 
 LIBS += /usr/local/lib/libopencv_core.so\
