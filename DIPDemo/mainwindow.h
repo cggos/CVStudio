@@ -18,6 +18,8 @@
 
 #include <QTimer>
 
+enum FUN_POINTER_TYPE{STATIC_GLOBAL, CVIMGPROC, SKINDETECTOR};
+
 namespace Ui {
 class MainWindow;
 }
@@ -133,7 +135,10 @@ private:
 private:
     cv::VideoCapture captureVideo;
     QTimer *timerCaptureVideo;
+
+    FUN_POINTER_TYPE typeFunPointer;
     cv::Mat (*processImg)(const cv::Mat &imgSrc);
+    cv::Mat (CVImgProc::*processCVImg)(const cv::Mat &imgSrc);
 
 private slots:
     void CaptureFrame();

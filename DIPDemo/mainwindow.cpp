@@ -6,7 +6,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     strPathQssFile(":/QSS/QSS/StyleSheet.qss"),
     clrBKApp(QColor(205,215,230)),
-    processImg(NULL)
+    processImg(NULL),
+    processCVImg(NULL)
 {
     ui->setupUi(this);
 
@@ -301,9 +302,20 @@ void MainWindow::CaptureFrame()
     {
         DisplayImage(imgSrc,0);
 
-        if(processImg == NULL)
-            return;
-        imgDst = processImg(imgSrc);
+        switch (typeFunPointer) {
+        case FUN_POINTER_TYPE::STATIC_GLOBAL:
+            if(processImg == NULL)
+                return;
+            imgDst = processImg(imgSrc);
+            break;
+        case FUN_POINTER_TYPE::CVIMGPROC:
+            if(processCVImg == NULL)
+                return;
+            imgDst = (procCVImg.*processCVImg)(imgSrc);
+            break;
+        default:
+            break;
+        }
 
         DisplayImage(imgDst,1);
     }
@@ -323,13 +335,22 @@ void MainWindow::slotHistogram()
     if(!CheckSrcImage())
         return;
 
-    SelChannelDlg *dlgSelChannel = new SelChannelDlg(NULL,imgSrc.channels());
-    if(dlgSelChannel->exec() == QDialog::Accepted)
-    {
-        imgDst = procCVImg.GetHistgramImg(imgSrc,dlgSelChannel->indexChannel);
-        DisplayImage(imgDst,1);
+    if(captureVideo.isOpened()){
+        processCVImg = &CVImgProc::GetHistgramImg;
+        typeFunPointer = FUN_POINTER_TYPE::CVIMGPROC;
+        return;
     }
-    delete dlgSelChannel;
+
+    imgDst = procCVImg.GetHistgramImg(imgSrc);
+    DisplayImage(imgDst,1);
+
+//    SelChannelDlg *dlgSelChannel = new SelChannelDlg(NULL,imgSrc.channels());
+//    if(dlgSelChannel->exec() == QDialog::Accepted)
+//    {
+//        imgDst = procCVImg.GetHistgramImg(imgSrc,dlgSelChannel->indexChannel);
+//        DisplayImage(imgDst,1);
+//    }
+//    delete dlgSelChannel;
 }
 
 void MainWindow::slotHistEqualize()
@@ -417,6 +438,7 @@ void MainWindow::slotDetectSkin()
 
     if(captureVideo.isOpened()){
         processImg = SkinDetector::GetSkin_RGBHCbCr;
+        typeFunPointer = FUN_POINTER_TYPE::STATIC_GLOBAL;
         return;
     }
 

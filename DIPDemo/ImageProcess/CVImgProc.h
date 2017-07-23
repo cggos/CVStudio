@@ -18,7 +18,7 @@ public:
 
     cv::Mat CvtToGrayImg(const cv::Mat &imgSrc);
 
-    cv::Mat GetHistgramImg(const cv::Mat &imgSrc,int indexChannel=0);
+    cv::Mat GetHistgramImg(const cv::Mat &imgSrc);
 
     cv::Mat EqualizeImgHist(const cv::Mat &imgSrcGray);
 

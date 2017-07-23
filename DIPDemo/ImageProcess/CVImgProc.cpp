@@ -86,10 +86,10 @@ cv::Mat CVImgProc::CvtToGrayImg(const cv::Mat &imgSrc)
     return  imgGray;
 }
 
-cv::Mat CVImgProc::GetHistgramImg(const cv::Mat &imgSrc, int indexChannel)
+cv::Mat CVImgProc::GetHistgramImg(const cv::Mat &imgSrc/*, int indexChannel*/)
 {
     int channels[1]={0};
-    channels[0] = indexChannel;//使用通道号
+    channels[0] = 0;// indexChannel;//使用通道号
     int histSize[1]={256};//项的数量
     float hranges[2]={0.0,255.0};//像素的最小和最大值
     const float *ranges[1];
