@@ -10,6 +10,7 @@ Output/
 # Compiled Object files
 *.o
 *.obj
+*.pro.user*
 
 # Executables
 *.exe
