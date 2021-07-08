@@ -1,16 +1,24 @@
-# DIPDemo
+# DIP Demo with Qt and OpenCV
 
 Digital Image Processing Demonstration.
 
 ----------
 
+<p align="center">
+  <img src="imgs/dip_demo.jpg"/>
+</p>
+
 ## Development Requirements
-* Qt 5
-* OpenCV 2
+
+* Qt5
+* OpenCV2+
 
 ## Summary of *Computer Vision with OpenCV 2*
+
 Source Code of the Book: [https://github.com/vinjn/opencv-2-cookbook-src](https://github.com/vinjn/opencv-2-cookbook-src "OpenCV 2 计算机视觉编程手册")
+
 ### Key Points
+
 * Salt and pepper noise
 * Color reduce
 * Image sharpening
@@ -27,4 +35,5 @@ Source Code of the Book: [https://github.com/vinjn/opencv-2-cookbook-src](https:
 * Mean filtering
 
 ## Skin Detection
+
 * [Skin Color Thresholding with OpenCV](http://www.bytefish.de/blog/opencv/skin_color_thresholding/)
