@@ -1,17 +1,50 @@
 # DIP Demo with Qt and OpenCV
 
-Digital Image Processing Demonstration.
+Digital Image Processing Demonstration with Qt.
 
-----------
+---
 
 <p align="center">
   <img src="imgs/dip_demo.jpg"/>
 </p>
 
-## Development Requirements
+## Requirements
+
+tested on Ubuntu 16.04 and Ubuntu 18.04
 
 * Qt5
-* OpenCV2+
+* OpenCV 2 (or above)
+
+## Build & Run
+
+* GUI
+  - Qt Creator
+
+* CLI
+  
+  - qmake
+    ```sh
+    mkdir build
+    cd build
+
+    qmake ..
+    make -j4
+
+    # run    
+    ../Output/DIPDemoQt
+    ```
+  
+  - cmake
+    ```sh
+    mkdir build
+    cd build
+
+    cmake ..
+    make -j4
+
+    # run    
+    ./DIPDemoQt
+    ```
 
 ## Summary of *Computer Vision with OpenCV 2*
 

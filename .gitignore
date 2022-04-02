@@ -1,4 +1,5 @@
 # Directories to be ignored
+build/
 build-*/
 Output/
 
