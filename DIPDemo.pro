@@ -61,17 +61,37 @@ LIBS += $$OpenCV_LIBS_PREFIX\libopencv_calib3d249.dll.a             \
 
 unix {
 
-INCLUDEPATH += /opt/ros/kinetic/include/opencv-3.3.1-dev/
+# Ubuntu 16.04 with OpenCV in ROS Kinetic
 
-LIBS += -L /opt/ros/kinetic/lib/x86_64-linux-gnu
+#INCLUDEPATH += /opt/ros/kinetic/include/opencv-3.3.1-dev/
 
-LIBS += /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_core3.so   \
-    /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_highgui3.so    \
-    /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_imgproc3.so    \
-    /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_imgcodecs3.so  \
-    /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_ml3.so         \
-    /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_video3.so      \
-    /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_videoio3.so
+#LIBS += -L /opt/ros/kinetic/lib/x86_64-linux-gnu
+
+#LIBS += /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_core3.so   \
+#    /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_highgui3.so    \
+#    /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_imgproc3.so    \
+#    /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_imgcodecs3.so  \
+#    /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_ml3.so         \
+#    /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_video3.so      \
+#    /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_videoio3.so
+
+
+# Ubuntu 18.04 with OpenCV in ROS Melodic
+
+OpenCV_RootDir = /usr
+OpenCV_LIBS_PREFIX = $$OpenCV_RootDir/lib/x86_64-linux-gnu
+
+INCLUDEPATH += $$OpenCV_RootDir/include/opencv
+
+LIBS += -L $$OpenCV_LIBS_PREFIX
+
+LIBS += $$OpenCV_LIBS_PREFIX/libopencv_core.so   \
+    $$OpenCV_LIBS_PREFIX/libopencv_highgui.so    \
+    $$OpenCV_LIBS_PREFIX/libopencv_imgproc.so    \
+    $$OpenCV_LIBS_PREFIX/libopencv_imgcodecs.so  \
+    $$OpenCV_LIBS_PREFIX/libopencv_ml.so         \
+    $$OpenCV_LIBS_PREFIX/libopencv_video.so      \
+    $$OpenCV_LIBS_PREFIX/libopencv_videoio.so
 }
 
 RESOURCES += dipdemo.qrc
