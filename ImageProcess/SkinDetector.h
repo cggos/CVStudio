@@ -3,6 +3,11 @@
 
 #include <opencv2/opencv.hpp>
 
+/**
+ * @brief 
+ * @ref https://www.bytefish.de/blog/skin_color_thresholding.html
+ * 
+ */
 class SkinDetector
 {
 public:
