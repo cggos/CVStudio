@@ -1,6 +1,8 @@
-# DIP Demo with Qt and OpenCV
+# CV App
 
-Digital Image Processing Demonstration with Qt.
+GUI App with Qt for Computer Vision
+
+* Source Code of the Book: [*Computer Vision with OpenCV 2*](https://github.com/vinjn/opencv-2-cookbook-src "OpenCV 2 计算机视觉编程手册")
 
 ---
 
@@ -46,27 +48,24 @@ tested on Ubuntu 16.04 and Ubuntu 18.04
     ./DIPDemoQt
     ```
 
-## Summary of *Computer Vision with OpenCV 2*
 
-Source Code of the Book: [https://github.com/vinjn/opencv-2-cookbook-src](https://github.com/vinjn/opencv-2-cookbook-src "OpenCV 2 计算机视觉编程手册")
 
-### Key Points
+## TODO
 
-* Salt and pepper noise
-* Color reduce
-* Image sharpening
-* Color model transformation
-* Histogram
-* Binary image
-* Look up table
-* Histogram equalization
-* Back Project
-* MeanShift
-* CamShift
-* Gaussian Blur(Gaussian Distribution,Gaussian Function)
-* Median filtering
-* Mean filtering
+* **2D Image Processing**
 
-## Skin Detection
+  - [x] Salt and pepper noise
+  - [x] Color reduce
+  - [x] Image sharpening
+  - [x] Color model transformation
+  - [x] Histogram
+  - [x] Binary image
+  - [x] Look up table
+  - [x] Histogram equalization
+  - [x] Back Project
+  - [x] Gaussian Blur(Gaussian Distribution,Gaussian Function)
+  - [x] Median filtering
+  - [x] Mean filtering
+  - [ ] CamShift & MeanShift
 
-* [Skin Color Thresholding with OpenCV](http://www.bytefish.de/blog/opencv/skin_color_thresholding/)
+* [ ] **3D Point Cloud**
