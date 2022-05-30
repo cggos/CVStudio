@@ -1,6 +1,6 @@
-# CV App
+# CV Studio
 
-GUI App with Qt for Computer Vision
+CV Studio with GUI using Qt for Computer Vision
 
 * Source Code of the Book: [*Computer Vision with OpenCV 2*](https://github.com/vinjn/opencv-2-cookbook-src "OpenCV 2 计算机视觉编程手册")
 
